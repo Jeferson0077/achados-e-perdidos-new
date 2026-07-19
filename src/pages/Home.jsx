@@ -6,6 +6,7 @@ import { categories } from '../data/categories'
 import SubcategoryGrid from '../components/SubcategoryGrid'
 import ItemGrid from '../components/ItemGrid'
 import Footer from '../components/Footer'
+import "../styles/header.css";
 
 function Home() {
     const [categoriaSelecionada, setCategoriaSelecionada] = useState(null)
