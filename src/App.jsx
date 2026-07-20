@@ -17,7 +17,7 @@ function App() {
       <Route path="/login" element={<Login />} />
 
       <Route path="/admin/dashboard" element={<Dashboard />} />
-      <Route path="/admin/novo-item" element={<NewItem />} />
+      <Route path="/admin/new-item" element={<NewItem />} />
       <Route path="/admin/itens-ativos" element={<ActiveItems />} />
       <Route path="/admin/itens-retirados" element={<WithdrawnItems />} />
       <Route path="/admin/doacoes" element={<Donations />} />

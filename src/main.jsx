@@ -9,10 +9,10 @@ import "./styles/global.css"
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <BrowserRouter basename="/achados-e-perdidos-new">
+    <HashRouter>
       <ItemsProvider>
         <App />
       </ItemsProvider>
-    </BrowserRouter>
+    </HashRouter>
   </StrictMode>
 )
