@@ -12,27 +12,52 @@ function AdminSidebar() {
             </h1>
 
             <nav className="admin-sidebar__nav">
-                <NavLink to="/admin/dashboard">
+                <NavLink
+                    to="/admin/dashboard"
+                    className={({ isActive }) =>
+                        `admin-sidebar__link ${isActive ? "active" : ""}`
+                    }
+                >
                     <span>▦</span>
                     Dashboard
                 </NavLink>
 
-                <NavLink to="/admin/new-item">
+                <NavLink
+                    to="/admin/new-item"
+                    className={({ isActive }) =>
+                        `admin-sidebar__link ${isActive ? "active" : ""}`
+                    }
+                >
                     <span>＋</span>
                     Novo item
                 </NavLink>
 
-                <NavLink to="/admin/itens-ativos">
+                <NavLink
+                    to="/admin/itens-ativos"
+                    className={({ isActive }) =>
+                        `admin-sidebar__link ${isActive ? "active" : ""}`
+                    }
+                >
                     <span>□</span>
                     Itens Ativos
                 </NavLink>
 
-                <NavLink to="/admin/itens-retirados">
+                <NavLink
+                    to="/admin/itens-retirados"
+                    className={({ isActive }) =>
+                        `admin-sidebar__link ${isActive ? "active" : ""}`
+                    }
+                >
                     <span>✓</span>
                     Retirados
                 </NavLink>
 
-                <NavLink to="/admin/doacoes">
+                <NavLink
+                    to="/admin/doacoes"
+                    className={({ isActive }) =>
+                        `admin-sidebar__link ${isActive ? "active" : ""}`
+                    }
+                >
                     <span>♡</span>
                     Doações
                 </NavLink>
