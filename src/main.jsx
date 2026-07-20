@@ -1,15 +1,18 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom'
-import App from './App.jsx'
-import "./styles/global.css";
+import { StrictMode } from "react"
+import { createRoot } from "react-dom/client"
+import { HashRouter } from "react-router-dom"
 
+import App from "./App"
+import { ItemsProvider } from "./contexts/ItemsContext"
 
+import "./styles/global.css"
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter basename="/achados-e-perdidos-new">
-      <App />
+      <ItemsProvider>
+        <App />
+      </ItemsProvider>
     </BrowserRouter>
-  </StrictMode>,
+  </StrictMode>
 )

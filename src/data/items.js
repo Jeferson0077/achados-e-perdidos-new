@@ -1,33 +1,43 @@
-import garrafaFoto from '../assets/garrafaFoto.jpeg'
+import garrafaFoto from "../assets/garrafaFoto.jpeg"
 
 export const items = [
     {
         id: 1,
         foto: garrafaFoto,
         nome: "Garrafa preta",
-        data: "09/07/2026",
+        dataEncontrado: "2026-07-09",
         codigo: "CAP-01",
         categoria: "academia",
-        subcategoria: null
+        subcategoria: null,
+        observacoes: "",
+        status: "ativo",
+        dataRetirada: null,
+        dataDoacao: null
     },
-
     {
-        id: 1,
+        id: 2,
+        foto: "",
+        nome: "Boné preto Nike",
+        dataEncontrado: "2026-07-09",
         codigo: "CAP-02",
-        nome: "bone preto nike",
         categoria: "banhos-cuidados",
         subcategoria: "shampoo",
-        data: "09/07/2026",
-        foto: ""
+        observacoes: "",
+        status: "ativo",
+        dataRetirada: null,
+        dataDoacao: null
     },
-
     {
-        id: 1,
+        id: 3,
+        foto: "",
+        nome: "Shampoo Dove",
+        dataEncontrado: "2026-07-09",
         codigo: "CAP-03",
-        nome: "shampoo dove",
         categoria: "banhos-cuidados",
         subcategoria: "shampoo",
-        data: "09/07/2026",
-        foto: ""
-    },
+        observacoes: "",
+        status: "ativo",
+        dataRetirada: null,
+        dataDoacao: null
+    }
 ]
