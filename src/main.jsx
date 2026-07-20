@@ -8,7 +8,7 @@ import "./styles/global.css";
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter basename="/achados-e-perdidos">
+    <BrowserRouter basename="/achados-e-perdidos-new">
       <App />
     </BrowserRouter>
   </StrictMode>,
