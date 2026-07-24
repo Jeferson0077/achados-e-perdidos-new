@@ -12,6 +12,7 @@
 @import "./admin-sidebar.css";
 @import "./dashboard.css";
 @import "./new-item.css";
+@import './active-items.css';
 
 * {
     margin: 0;

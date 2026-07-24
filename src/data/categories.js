@@ -20,7 +20,7 @@ export const categories = [
     },
 
     {
-        iid: "banhos-cuidados",
+        id: "banhos-cuidados",
         nome: "Banhos e Cuidados Pessoais",
         icone: banhoIcon,
         subcategorias: [

@@ -1,4 +1,21 @@
 function ItemCard(props) {
+    function formatarData(data) {
+        if (!data) return ""
+
+        // Se já estiver no formato dd/mm/aaaa
+        if (data.includes("/")) {
+            return data
+        }
+
+        // Se estiver no formato aaaa-mm-dd
+        if (data.includes("-")) {
+            const [ano, mes, dia] = data.split("-")
+            return `${dia}/${mes}/${ano}`
+        }
+
+        return data
+    }
+
     return (
         <button
             className="item-card"
@@ -18,7 +35,7 @@ function ItemCard(props) {
                 </span>
 
                 <p className="item-card__date">
-                    {props.data}
+                    {formatarData(props.data)}
                 </p>
             </div>
         </button>

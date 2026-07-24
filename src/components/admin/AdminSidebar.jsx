@@ -1,5 +1,14 @@
 import { NavLink } from "react-router-dom"
 
+import {
+    FiGrid,
+    FiPlusCircle,
+    FiPackage,
+    FiCheckCircle,
+    FiGift,
+    FiArchive
+} from "react-icons/fi"
+
 function AdminSidebar() {
     return (
         <aside className="admin-sidebar">
@@ -18,7 +27,7 @@ function AdminSidebar() {
                         `admin-sidebar__link ${isActive ? "active" : ""}`
                     }
                 >
-                    <span>▦</span>
+                    <FiGrid size={18} />
                     Dashboard
                 </NavLink>
 
@@ -28,8 +37,8 @@ function AdminSidebar() {
                         `admin-sidebar__link ${isActive ? "active" : ""}`
                     }
                 >
-                    <span>＋</span>
-                    Novo item
+                    <FiPlusCircle size={18} />
+                    Novo Item
                 </NavLink>
 
                 <NavLink
@@ -38,7 +47,7 @@ function AdminSidebar() {
                         `admin-sidebar__link ${isActive ? "active" : ""}`
                     }
                 >
-                    <span>□</span>
+                    <FiPackage size={18} />
                     Itens Ativos
                 </NavLink>
 
@@ -48,8 +57,8 @@ function AdminSidebar() {
                         `admin-sidebar__link ${isActive ? "active" : ""}`
                     }
                 >
-                    <span>✓</span>
-                    Retirados
+                    <FiCheckCircle size={18} />
+                    Itens Retirados
                 </NavLink>
 
                 <NavLink
@@ -58,8 +67,18 @@ function AdminSidebar() {
                         `admin-sidebar__link ${isActive ? "active" : ""}`
                     }
                 >
-                    <span>♡</span>
-                    Doações
+                    <FiGift size={18} />
+                    Itens para Doação
+                </NavLink>
+
+                <NavLink
+                    to="/admin/itens-doados"
+                    className={({ isActive }) =>
+                        `admin-sidebar__link ${isActive ? "active" : ""}`
+                    }
+                >
+                    <FiArchive size={18} />
+                    Histórico de Doações
                 </NavLink>
             </nav>
         </aside>

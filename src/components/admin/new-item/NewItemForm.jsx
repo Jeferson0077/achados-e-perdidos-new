@@ -1,15 +1,29 @@
 import { useState } from "react"
+import { useItems } from "../../../contexts/ItemsContext"
 import { ITEM_STATUS } from "../../../constants/itemStatus"
+import { categories } from "../../../data/categories"
+
+const initialFormData = {
+    nome: "",
+    categoria: "",
+    subcategoria: "",
+    dataEncontrado: "",
+    observacoes: "",
+    fotoUrl: "",
+}
 
 function NewItemForm() {
-    const [formData, setFormData] = useState({
-        nome: "",
-        categoria: "",
-        subcategoria: "",
-        dataEncontrado: "",
-        observacoes: "",
-        fotoUrl: "",
-    })
+    const { items, addItem } = useItems()
+
+    const [formData, setFormData] = useState(initialFormData)
+    const [mensagem, setMensagem] = useState("")
+
+    const categoriaSelecionada = categories.find(
+        (categoria) => categoria.id === formData.categoria
+    )
+
+    const subcategoriasDisponiveis =
+        categoriaSelecionada?.subcategorias ?? []
 
     function handleChange(event) {
         const { name, value } = event.target
@@ -17,31 +31,99 @@ function NewItemForm() {
         setFormData((dadosAtuais) => ({
             ...dadosAtuais,
             [name]: value,
+
+            // Se mudar a categoria, limpa a subcategoria anterior
+            ...(name === "categoria" && {
+                subcategoria: "",
+            }),
         }))
+
+        setMensagem("")
+    }
+
+    function gerarCodigo() {
+        const numerosDosCodigos = items
+            .map((item) => {
+                const codigo = item.codigo ?? ""
+                return Number(codigo.replace(/\D/g, ""))
+            })
+            .filter((numero) => Number.isFinite(numero))
+
+        const maiorNumero =
+            numerosDosCodigos.length > 0
+                ? Math.max(...numerosDosCodigos)
+                : 0
+
+        const proximoNumero = maiorNumero + 1
+
+        return `CAP-${String(proximoNumero).padStart(3, "0")}`
+    }
+
+    function gerarId() {
+        if (
+            typeof crypto !== "undefined" &&
+            typeof crypto.randomUUID === "function"
+        ) {
+            return crypto.randomUUID()
+        }
+
+        return `${Date.now()}-${Math.random()}`
     }
 
     function handleSubmit(event) {
         event.preventDefault()
 
+        const nomeLimpo = formData.nome.trim()
+
+        if (!nomeLimpo) {
+            setMensagem("Informe o nome do item.")
+            return
+        }
+
+        if (!formData.categoria) {
+            setMensagem("Selecione uma categoria.")
+            return
+        }
+
+        if (
+            subcategoriasDisponiveis.length > 0 &&
+            !formData.subcategoria
+        ) {
+            setMensagem("Selecione uma subcategoria.")
+            return
+        }
+
+        const codigoGerado = gerarCodigo()
+
         const novoItem = {
-            id: "CAP-000123",
-            nome: formData.nome,
+            id: gerarId(),
+            codigo: codigoGerado,
+            nome: nomeLimpo,
             categoria: formData.categoria,
-            subcategoria: formData.subcategoria,
+            subcategoria: formData.subcategoria || null,
             dataEncontrado: formData.dataEncontrado,
             dataCadastro: new Date().toISOString(),
-            fotoUrl: formData.fotoUrl,
-            observacoes: formData.observacoes,
+            foto: formData.fotoUrl.trim(),
+            observacoes: formData.observacoes.trim(),
             status: ITEM_STATUS.ATIVO,
             dataRetirada: null,
             dataDoacao: null,
         }
 
-        console.log("Novo item cadastrado:", novoItem)
+        addItem(novoItem)
+
+        setFormData(initialFormData)
+        setMensagem(`Item ${codigoGerado} cadastrado com sucesso!`)
     }
 
     return (
         <form className="new-item-form" onSubmit={handleSubmit}>
+            {mensagem && (
+                <p className="new-item-form__message">
+                    {mensagem}
+                </p>
+            )}
+
             <div className="new-item-form__group">
                 <label htmlFor="nome">Nome do item</label>
 
@@ -67,33 +149,64 @@ function NewItemForm() {
                         onChange={handleChange}
                         required
                     >
-                        <option value="">Selecione uma categoria</option>
-                        <option value="Acessórios">Acessórios</option>
-                        <option value="Vestuário">Vestuário</option>
-                        <option value="Eletrônicos">Eletrônicos</option>
-                        <option value="Banhos e Cuidados">
-                            Banhos e Cuidados
+                        <option value="">
+                            Selecione uma categoria
                         </option>
+
+                        {categories.map((categoria) => (
+                            <option
+                                key={categoria.id}
+                                value={categoria.id}
+                            >
+                                {categoria.nome}
+                            </option>
+                        ))}
                     </select>
                 </div>
 
                 <div className="new-item-form__group">
-                    <label htmlFor="subcategoria">Subcategoria</label>
+                    <label htmlFor="subcategoria">
+                        Subcategoria
+                    </label>
 
-                    <input
+                    <select
                         id="subcategoria"
                         name="subcategoria"
-                        type="text"
                         value={formData.subcategoria}
                         onChange={handleChange}
-                        placeholder="Ex.: Carteiras"
-                    />
+                        disabled={
+                            !formData.categoria ||
+                            subcategoriasDisponiveis.length === 0
+                        }
+                        required={subcategoriasDisponiveis.length > 0}
+                    >
+                        <option value="">
+                            {!formData.categoria
+                                ? "Escolha uma categoria primeiro"
+                                : subcategoriasDisponiveis.length === 0
+                                    ? "Esta categoria não possui subcategorias"
+                                    : "Selecione uma subcategoria"}
+                        </option>
+
+                        {subcategoriasDisponiveis.map(
+                            (subcategoria) => (
+                                <option
+                                    key={subcategoria.id}
+                                    value={subcategoria.id}
+                                >
+                                    {subcategoria.nome}
+                                </option>
+                            )
+                        )}
+                    </select>
                 </div>
             </div>
 
             <div className="new-item-form__row">
                 <div className="new-item-form__group">
-                    <label htmlFor="dataEncontrado">Data encontrada</label>
+                    <label htmlFor="dataEncontrado">
+                        Data encontrada
+                    </label>
 
                     <input
                         id="dataEncontrado"
@@ -111,7 +224,7 @@ function NewItemForm() {
                     <input
                         id="fotoUrl"
                         name="fotoUrl"
-                        type="text"
+                        type="url"
                         value={formData.fotoUrl}
                         onChange={handleChange}
                         placeholder="URL temporária da imagem"
@@ -120,7 +233,9 @@ function NewItemForm() {
             </div>
 
             <div className="new-item-form__group">
-                <label htmlFor="observacoes">Observações</label>
+                <label htmlFor="observacoes">
+                    Observações
+                </label>
 
                 <textarea
                     id="observacoes"
@@ -132,7 +247,10 @@ function NewItemForm() {
                 />
             </div>
 
-            <button className="new-item-form__submit" type="submit">
+            <button
+                className="new-item-form__submit"
+                type="submit"
+            >
                 Cadastrar item
             </button>
         </form>

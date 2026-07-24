@@ -9,6 +9,9 @@ import NewItem from "./pages/admin/NewItem";
 import ActiveItems from "./pages/admin/ActiveItems";
 import WithdrawnItems from "./pages/admin/WithdrawnItems";
 import Donations from "./pages/admin/Donations";
+import DonatedItems from "./pages/admin/DonatedItems"
+
+
 
 function App() {
   return (
@@ -21,6 +24,8 @@ function App() {
       <Route path="/admin/itens-ativos" element={<ActiveItems />} />
       <Route path="/admin/itens-retirados" element={<WithdrawnItems />} />
       <Route path="/admin/doacoes" element={<Donations />} />
+      <Route path="/admin/itens-doados" element={<DonatedItems />}
+      />
 
       <Route path="*" element={<NotFound />} />
     </Routes>

@@ -1,39 +1,126 @@
 .dashboard-cards {
-
     display: grid;
-
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 20px;
-
 }
 
 .dashboard-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 18px;
 
-    background: #181818;
+    min-height: 130px;
+    padding: 24px;
 
-    border: 1px solid #222;
+    background: linear-gradient(145deg, #191919, #131313);
+    border: 1px solid #292929;
+    border-radius: 18px;
 
-    border-radius: 15px;
-
-    padding: 25px;
-
+    overflow: hidden;
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
 }
 
-.dashboard-card__title {
+.dashboard-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
 
-    display: block;
+    width: 4px;
+    height: 100%;
 
-    color: #888;
+    background: var(--card-color);
+}
 
-    margin-bottom: 12px;
+.dashboard-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--card-color);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
+}
 
+.dashboard-card__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 56px;
+    height: 56px;
+
+    flex-shrink: 0;
+
+    color: var(--card-color);
+    background: var(--card-background);
+    border-radius: 16px;
+
+    font-size: 27px;
+
+    transition: transform 0.25s ease;
+}
+
+.dashboard-card:hover .dashboard-card__icon {
+    transform: scale(1.08) rotate(-4deg);
+}
+
+.dashboard-card__content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .dashboard-card__number {
+    color: #fff;
+    font-size: 38px;
+    line-height: 1;
+}
 
-    font-size: 42px;
+.dashboard-card__title {
+    color: #969696;
+    font-size: 15px;
+    font-weight: 500;
+}
 
-    color: white;
+.dashboard-card__subtitle {
+    margin-top: 4px;
+    color: #5f5f5f;
+    font-size: 12px;
+}
 
+.dashboard-card--active {
+    --card-color: #3b82f6;
+    --card-background: rgba(59, 130, 246, 0.12);
+}
+
+.dashboard-card--withdrawn {
+    --card-color: #22c55e;
+    --card-background: rgba(34, 197, 94, 0.12);
+}
+
+.dashboard-card--donation {
+    --card-color: #f59e0b;
+    --card-background: rgba(245, 158, 11, 0.12);
+}
+
+.dashboard-card--donated {
+    --card-color: #a855f7;
+    --card-background: rgba(168, 85, 247, 0.12);
+}
+
+@media (max-width: 1100px) {
+    .dashboard-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-card {
+        min-height: 110px;
+    }
 }

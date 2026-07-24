@@ -1,11 +1,20 @@
-import { createContext, useContext, useEffect, useState } from "react"
+import {
+    createContext,
+    useContext,
+    useEffect,
+    useState,
+} from "react"
+
 import { items as initialItems } from "../data/items"
+import { ITEM_STATUS } from "../constants/itemStatus"
 
 const ItemsContext = createContext(null)
 
 export function ItemsProvider({ children }) {
     const [items, setItems] = useState(() => {
-        const savedItems = localStorage.getItem("achados-perdidos-items")
+        const savedItems = localStorage.getItem(
+            "achados-perdidos-items"
+        )
 
         if (savedItems) {
             try {
@@ -26,7 +35,10 @@ export function ItemsProvider({ children }) {
     }, [items])
 
     function addItem(newItem) {
-        setItems((currentItems) => [...currentItems, newItem])
+        setItems((currentItems) => [
+            ...currentItems,
+            newItem,
+        ])
     }
 
     function updateItem(itemId, updatedData) {
@@ -41,22 +53,28 @@ export function ItemsProvider({ children }) {
 
     function removeItem(itemId) {
         setItems((currentItems) =>
-            currentItems.filter((item) => item.id !== itemId)
+            currentItems.filter(
+                (item) => item.id !== itemId
+            )
         )
     }
 
-    function withdrawItem(itemId, withdrawalData = {}) {
+    function withdrawItem(
+        itemId,
+        withdrawalData = {}
+    ) {
         updateItem(itemId, {
-            status: "retirado",
+            status: ITEM_STATUS.RETIRADO,
             dataRetirada: new Date().toISOString(),
-            ...withdrawalData
+            ...withdrawalData,
         })
     }
 
-    function donateItem(itemId) {
+    function donateItem(itemId, donationData = {}) {
         updateItem(itemId, {
-            status: "doado",
-            dataDoacao: new Date().toISOString()
+            status: ITEM_STATUS.DOADO,
+            dataDoacao: new Date().toISOString(),
+            ...donationData,
         })
     }
 
@@ -68,7 +86,7 @@ export function ItemsProvider({ children }) {
                 updateItem,
                 removeItem,
                 withdrawItem,
-                donateItem
+                donateItem,
             }}
         >
             {children}

@@ -80,6 +80,16 @@
     transform: translateY(-2px);
 }
 
+.new-item-form__message {
+    margin-bottom: 20px;
+    padding: 14px 16px;
+    border: 1px solid #2e7d32;
+    border-radius: 8px;
+    background: rgba(46, 125, 50, 0.12);
+    color: #7ee787;
+    font-weight: 600;
+}
+
 @media (max-width: 800px) {
     .new-item-form__row {
         grid-template-columns: 1fr;

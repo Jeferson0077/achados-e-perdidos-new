@@ -3,13 +3,24 @@ import { useItems } from "../../contexts/ItemsContext"
 import { ITEM_STATUS } from "../../constants/itemStatus"
 import AdminLayout from "../../layouts/AdminLayout"
 
-function WithdrawnItems() {
+function DonatedItems() {
     const { items } = useItems()
     const [itemSelecionado, setItemSelecionado] = useState(null)
 
-    const itensRetirados = items.filter(
-        (item) => item.status === ITEM_STATUS.RETIRADO
+    const itensDoados = items.filter(
+        (item) => item.status === ITEM_STATUS.DOADO
     )
+
+    function formatarData(data) {
+        if (!data) return "Não informado"
+
+        if (data.includes("/")) return data
+
+        const dataSemHorario = data.split("T")[0]
+        const [ano, mes, dia] = dataSemHorario.split("-")
+
+        return `${dia}/${mes}/${ano}`
+    }
 
     function abrirModal(item) {
         setItemSelecionado(item)
@@ -19,58 +30,42 @@ function WithdrawnItems() {
         setItemSelecionado(null)
     }
 
-    function formatarData(data) {
-        if (!data) return "Data não informada"
-
-        if (data.includes("/")) {
-            return data
-        }
-
-        const date = new Date(data)
-
-        if (!isNaN(date.getTime())) {
-            return date.toLocaleDateString("pt-BR")
-        }
-
-        return data
-    }
-
     return (
         <AdminLayout>
             <section className="admin-page">
                 <div className="admin-page__header">
                     <div>
-                        <h2>Itens Retirados</h2>
-
+                        <h2>Itens Doados</h2>
                         <p>
-                            Consulte os objetos que já foram devolvidos.
+                            Histórico dos objetos que já foram destinados
+                            para doação ou descarte.
                         </p>
                     </div>
 
                     <span className="admin-page__count">
-                        {itensRetirados.length}
-                        {itensRetirados.length === 1
-                            ? " item retirado"
-                            : " itens retirados"}
+                        {itensDoados.length}
+                        {itensDoados.length === 1
+                            ? " item"
+                            : " itens"}
                     </span>
                 </div>
 
-                {itensRetirados.length === 0 ? (
+                {itensDoados.length === 0 ? (
                     <div className="active-items__empty">
                         <span>📦</span>
 
-                        <h3>Nenhum item retirado</h3>
+                        <h3>Nenhum item doado</h3>
 
                         <p>
-                            Os itens devolvidos aparecerão nesta página.
+                            Os itens doados aparecerão aqui.
                         </p>
                     </div>
                 ) : (
                     <div className="active-items__grid">
-                        {itensRetirados.map((item) => (
+                        {itensDoados.map((item) => (
                             <article
-                                className="active-item-card withdrawn-item-card"
                                 key={item.id}
+                                className="active-item-card donated-item-card"
                                 onClick={() => abrirModal(item)}
                             >
                                 <div className="active-item-card__image">
@@ -90,40 +85,27 @@ function WithdrawnItems() {
                                             {item.codigo}
                                         </span>
 
-                                        <span className="active-item-card__status">
-                                            Retirado
+                                        <span className="donated-item-card__status">
+                                            Doado
                                         </span>
                                     </div>
 
                                     <h3>{item.nome}</h3>
 
                                     <p>
-                                        <strong>Categoria:</strong>{" "}
-                                        {item.categoria}
-                                    </p>
-
-                                    {item.subcategoria && (
-                                        <p>
-                                            <strong>Subcategoria:</strong>{" "}
-                                            {item.subcategoria}
-                                        </p>
-                                    )}
-
-                                    <p>
-                                        <strong>Encontrado em:</strong>{" "}
-                                        {formatarData(
-                                            item.dataEncontrado || item.data
-                                        )}
+                                        <strong>Destino:</strong>{" "}
+                                        {item.destinoDoacao ||
+                                            "Não informado"}
                                     </p>
 
                                     <p>
-                                        <strong>Retirado em:</strong>{" "}
-                                        {formatarData(item.dataRetirada)}
+                                        <strong>Data:</strong>{" "}
+                                        {formatarData(item.dataDoacao)}
                                     </p>
 
                                     <button
-                                        className="withdrawn-item-card__details"
                                         type="button"
+                                        className="withdrawn-item-card__details"
                                         onClick={(event) => {
                                             event.stopPropagation()
                                             abrirModal(item)
@@ -147,30 +129,30 @@ function WithdrawnItems() {
                         className="withdraw-details"
                         role="dialog"
                         aria-modal="true"
-                        aria-labelledby="withdraw-details-title"
+                        aria-labelledby="donated-details-title"
                         onMouseDown={(event) =>
                             event.stopPropagation()
                         }
                     >
                         <button
-                            className="withdraw-details__close"
                             type="button"
-                            aria-label="Fechar modal"
+                            className="withdraw-details__close"
+                            aria-label="Fechar detalhes"
                             onClick={fecharModal}
                         >
                             ×
                         </button>
 
                         <div className="withdraw-details__header">
-                            <span>✅</span>
+                            <span>📦</span>
 
                             <div>
-                                <h2 id="withdraw-details-title">
-                                    Detalhes da retirada
+                                <h2 id="donated-details-title">
+                                    Detalhes da doação
                                 </h2>
 
                                 <p>
-                                    Informações registradas na devolução
+                                    Informações completas sobre o destino
                                     do objeto.
                                 </p>
                             </div>
@@ -191,7 +173,7 @@ function WithdrawnItems() {
                             )}
                         </div>
 
-                        <div className="withdraw-details__item">
+                        <div className="withdraw-details__title">
                             <div>
                                 <span>Item</span>
                                 <strong>
@@ -211,18 +193,18 @@ function WithdrawnItems() {
                             <div>
                                 <span>Categoria</span>
                                 <strong>
-                                    {itemSelecionado.categoria}
+                                    {itemSelecionado.categoria ||
+                                        "Não informada"}
                                 </strong>
                             </div>
 
-                            {itemSelecionado.subcategoria && (
-                                <div>
-                                    <span>Subcategoria</span>
-                                    <strong>
-                                        {itemSelecionado.subcategoria}
-                                    </strong>
-                                </div>
-                            )}
+                            <div>
+                                <span>Subcategoria</span>
+                                <strong>
+                                    {itemSelecionado.subcategoria ||
+                                        "Não informada"}
+                                </strong>
+                            </div>
 
                             <div>
                                 <span>Encontrado em</span>
@@ -235,60 +217,54 @@ function WithdrawnItems() {
                             </div>
 
                             <div>
-                                <span>Retirado em</span>
+                                <span>Doado em</span>
                                 <strong>
                                     {formatarData(
-                                        itemSelecionado.dataRetirada
+                                        itemSelecionado.dataDoacao
                                     )}
                                 </strong>
                             </div>
 
                             <div>
-                                <span>Retirado por</span>
+                                <span>Destino</span>
                                 <strong>
-                                    {itemSelecionado.retiradoPor ||
+                                    {itemSelecionado.destinoDoacao ||
                                         "Não informado"}
                                 </strong>
                             </div>
 
                             <div>
-                                <span>Matrícula</span>
+                                <span>Responsável</span>
                                 <strong>
-                                    {itemSelecionado.matriculaRetirada ||
-                                        "Não informada"}
+                                    {itemSelecionado.responsavelDoacao ||
+                                        "Não informado"}
                                 </strong>
                             </div>
                         </div>
 
-                        {itemSelecionado.observacoes && (
-                            <div className="withdraw-details__observation">
-                                <span>Observações do item</span>
+                        <div className="withdraw-details__notes">
+                            <div>
+                                <span>
+                                    Observações do cadastro
+                                </span>
 
                                 <p>
-                                    {itemSelecionado.observacoes}
+                                    {itemSelecionado.observacoes ||
+                                        "Nenhuma observação informada."}
                                 </p>
                             </div>
-                        )}
 
-                        {itemSelecionado.observacaoRetirada && (
-                            <div className="withdraw-details__observation">
-                                <span>Observações da retirada</span>
+                            <div>
+                                <span>
+                                    Observações da doação
+                                </span>
 
                                 <p>
-                                    {
-                                        itemSelecionado.observacaoRetirada
-                                    }
+                                    {itemSelecionado.observacaoDoacao ||
+                                        "Nenhuma observação informada."}
                                 </p>
                             </div>
-                        )}
-
-                        <button
-                            className="withdraw-details__finish"
-                            type="button"
-                            onClick={fecharModal}
-                        >
-                            Fechar
-                        </button>
+                        </div>
                     </div>
                 </div>
             )}
@@ -296,4 +272,4 @@ function WithdrawnItems() {
     )
 }
 
-export default WithdrawnItems
+export default DonatedItems

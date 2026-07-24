@@ -1,5 +1,4 @@
 import AdminLayout from "../../layouts/AdminLayout"
-
 import DashboardCards from "../../components/admin/DashboardCards"
 
 function Dashboard() {

@@ -1,0 +1,820 @@
+.admin-page__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.admin-page__header h2 {
+    margin-bottom: 6px;
+}
+
+.admin-page__count {
+    flex-shrink: 0;
+    padding: 10px 14px;
+    border: 1px solid #2d2d2d;
+    border-radius: 8px;
+    background: #151515;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.active-items__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill,
+            minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.active-item-card {
+    overflow: hidden;
+    border: 1px solid #292929;
+    border-radius: 14px;
+    background: #111111;
+}
+
+.active-item-card__image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #090909;
+    font-size: 42px;
+}
+
+.active-item-card__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.active-item-card__content {
+    padding: 18px;
+}
+
+.active-item-card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.active-item-card__code {
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.active-item-card__status {
+    padding: 5px 9px;
+    border: 1px solid #267a3d;
+    border-radius: 999px;
+    background: rgba(38, 122, 61, 0.15);
+    color: #77dd8c;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.active-item-card__content h3 {
+    margin-bottom: 14px;
+    font-size: 20px;
+}
+
+.active-item-card__content p {
+    margin: 7px 0;
+    color: #c7c7c7;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.active-item-card__observations {
+    margin-top: 14px !important;
+    padding-top: 14px;
+    border-top: 1px solid #292929;
+}
+
+.active-items__empty {
+    display: flex;
+    min-height: 320px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 30px;
+    border: 1px dashed #343434;
+    border-radius: 14px;
+    text-align: center;
+}
+
+.active-items__empty span {
+    margin-bottom: 14px;
+    font-size: 42px;
+}
+
+.active-items__empty h3 {
+    margin-bottom: 8px;
+}
+
+.active-items__empty p {
+    color: #a9a9a9;
+}
+
+.active-item-card__withdraw {
+    width: 100%;
+    margin-top: 18px;
+    padding: 12px 16px;
+    border: 1px solid #9b2c2c;
+    border-radius: 8px;
+    background: rgba(155, 44, 44, 0.16);
+    color: #ff8a8a;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.active-item-card__withdraw:hover {
+    border-color: #c53b3b;
+    background: rgba(197, 59, 59, 0.25);
+    transform: translateY(-1px);
+}
+
+.withdraw-modal__overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(4px);
+}
+
+.withdraw-modal {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 28px;
+    border: 1px solid #2e2e2e;
+    border-radius: 18px;
+    background: #151515;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+}
+
+.withdraw-modal__close {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 50%;
+    background: #242424;
+    color: #ffffff;
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.withdraw-modal__close:hover {
+    background: #333333;
+}
+
+.withdraw-modal__header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-right: 40px;
+}
+
+.withdraw-modal__header>span {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: rgba(34, 197, 94, 0.12);
+    font-size: 26px;
+}
+
+.withdraw-modal__header h2 {
+    margin: 0 0 4px;
+    color: #ffffff;
+    font-size: 24px;
+}
+
+.withdraw-modal__header p {
+    margin: 0;
+    color: #a3a3a3;
+    font-size: 14px;
+}
+
+.withdraw-modal__item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 24px 0;
+}
+
+.withdraw-modal__item div {
+    padding: 14px;
+    border: 1px solid #2b2b2b;
+    border-radius: 12px;
+    background: #101010;
+}
+
+.withdraw-modal__item span {
+    display: block;
+    margin-bottom: 5px;
+    color: #8d8d8d;
+    font-size: 12px;
+}
+
+.withdraw-modal__item strong {
+    color: #ffffff;
+    font-size: 15px;
+}
+
+.withdraw-modal__form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.withdraw-modal__form label {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    color: #e5e5e5;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.withdraw-modal__form input,
+.withdraw-modal__form textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 14px;
+    border: 1px solid #333333;
+    border-radius: 10px;
+    outline: none;
+    background: #0d0d0d;
+    color: #ffffff;
+    font: inherit;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.withdraw-modal__form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.withdraw-modal__form input:focus,
+.withdraw-modal__form textarea:focus {
+    border-color: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
+}
+
+.withdraw-modal__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.withdraw-modal__cancel,
+.withdraw-modal__confirm {
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.withdraw-modal__cancel {
+    border: 1px solid #3a3a3a;
+    background: transparent;
+    color: #d4d4d4;
+}
+
+.withdraw-modal__confirm {
+    border: 1px solid #22c55e;
+    background: #22c55e;
+    color: #07140b;
+}
+
+.withdraw-modal__cancel:hover {
+    background: #242424;
+}
+
+.withdraw-modal__confirm:hover {
+    background: #16a34a;
+    border-color: #16a34a;
+}
+
+@media (max-width: 600px) {
+    .withdraw-modal__overlay {
+        padding: 12px;
+    }
+
+    .withdraw-modal {
+        padding: 22px 18px;
+        border-radius: 14px;
+    }
+
+    .withdraw-modal__item {
+        grid-template-columns: 1fr;
+    }
+
+    .withdraw-modal__actions {
+        flex-direction: column-reverse;
+    }
+
+    .withdraw-modal__cancel,
+    .withdraw-modal__confirm {
+        width: 100%;
+    }
+}
+
+.withdrawn-item-card {
+    cursor: pointer;
+}
+
+.withdrawn-item-card:hover {
+    transform: translateY(-3px);
+    border-color: #3f3f3f;
+}
+
+.withdrawn-item-card__details {
+    width: 100%;
+    margin-top: 16px;
+    padding: 11px 14px;
+    border: 1px solid #3a3a3a;
+    border-radius: 9px;
+    background: #202020;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.withdrawn-item-card__details:hover {
+    border-color: #525252;
+    background: #292929;
+}
+
+.withdraw-details__overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+}
+
+.withdraw-details {
+    position: relative;
+    width: 100%;
+    max-width: 650px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 28px;
+    border: 1px solid #2e2e2e;
+    border-radius: 18px;
+    background: #151515;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
+}
+
+.withdraw-details__close {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 50%;
+    background: #242424;
+    color: #ffffff;
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.withdraw-details__header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-right: 45px;
+}
+
+.withdraw-details__header>span {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: rgba(34, 197, 94, 0.12);
+    font-size: 25px;
+}
+
+.withdraw-details__header h2 {
+    margin: 0 0 4px;
+    color: #ffffff;
+    font-size: 24px;
+}
+
+.withdraw-details__header p {
+    margin: 0;
+    color: #a3a3a3;
+    font-size: 14px;
+}
+
+.withdraw-details__image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 24px 0;
+}
+
+.withdraw-details__image img {
+    max-width: 100%;
+    max-height: 500px;
+    width: auto;
+    height: auto;
+
+    border-radius: 14px;
+    border: 1px solid #2b2b2b;
+    background: #0d0d0d;
+}
+
+.withdraw-details__image span {
+    font-size: 48px;
+}
+
+.withdraw-details__item,
+.withdraw-details__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.withdraw-details__item {
+    margin-bottom: 12px;
+}
+
+.withdraw-details__item div,
+.withdraw-details__grid div {
+    padding: 14px;
+    border: 1px solid #2b2b2b;
+    border-radius: 12px;
+    background: #101010;
+}
+
+.withdraw-details__item span,
+.withdraw-details__grid span,
+.withdraw-details__observation span {
+    display: block;
+    margin-bottom: 5px;
+    color: #8d8d8d;
+    font-size: 12px;
+}
+
+.withdraw-details__item strong,
+.withdraw-details__grid strong {
+    color: #ffffff;
+    font-size: 15px;
+}
+
+.withdraw-details__observation {
+    margin-top: 12px;
+    padding: 14px;
+    border: 1px solid #2b2b2b;
+    border-radius: 12px;
+    background: #101010;
+}
+
+.withdraw-details__observation p {
+    margin: 0;
+    color: #dddddd;
+    line-height: 1.5;
+}
+
+.withdraw-details__finish {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px 18px;
+    border: 1px solid #3a3a3a;
+    border-radius: 10px;
+    background: #242424;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.withdraw-details__finish:hover {
+    background: #303030;
+}
+
+.donation-card__button {
+    width: 100%;
+    margin-top: 18px;
+    padding: 12px 16px;
+    border: 1px solid #d97706;
+    border-radius: 9px;
+    background: rgba(217, 119, 6, 0.16);
+    color: #fbbf24;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.donation-card__button:hover {
+    border-color: #f59e0b;
+    background: rgba(245, 158, 11, 0.24);
+    transform: translateY(-1px);
+}
+
+.donation-modal__overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+}
+
+.donation-modal {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 28px;
+    border: 1px solid #2e2e2e;
+    border-radius: 18px;
+    background: #151515;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
+}
+
+.donation-modal__close {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 50%;
+    background: #242424;
+    color: #ffffff;
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.donation-modal__header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-right: 42px;
+}
+
+.donation-modal__header>span {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: rgba(245, 158, 11, 0.14);
+    font-size: 26px;
+}
+
+.donation-modal__header h2 {
+    margin: 0 0 4px;
+    color: #ffffff;
+    font-size: 24px;
+}
+
+.donation-modal__header p {
+    margin: 0;
+    color: #a3a3a3;
+    font-size: 14px;
+}
+
+.donation-modal__item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 24px 0;
+}
+
+.donation-modal__item div {
+    padding: 14px;
+    border: 1px solid #2b2b2b;
+    border-radius: 12px;
+    background: #101010;
+}
+
+.donation-modal__item span {
+    display: block;
+    margin-bottom: 5px;
+    color: #8d8d8d;
+    font-size: 12px;
+}
+
+.donation-modal__item strong {
+    color: #ffffff;
+    font-size: 15px;
+}
+
+.donation-modal__form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.donation-modal__form label {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    color: #e5e5e5;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.donation-modal__form input,
+.donation-modal__form select,
+.donation-modal__form textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 14px;
+    border: 1px solid #333333;
+    border-radius: 10px;
+    outline: none;
+    background: #0d0d0d;
+    color: #ffffff;
+    font: inherit;
+}
+
+.donation-modal__form input:focus,
+.donation-modal__form select:focus,
+.donation-modal__form textarea:focus {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12);
+}
+
+.donation-modal__form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.donation-modal__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.donation-modal__cancel,
+.donation-modal__confirm {
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.donation-modal__cancel {
+    border: 1px solid #3a3a3a;
+    background: transparent;
+    color: #d4d4d4;
+}
+
+.donation-modal__confirm {
+    border: 1px solid #f59e0b;
+    background: #f59e0b;
+    color: #1c1002;
+}
+
+.donation-modal__cancel:hover {
+    background: #242424;
+}
+
+.donation-modal__confirm:hover {
+    border-color: #d97706;
+    background: #d97706;
+}
+
+.donated-item-card {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.donated-item-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+.donated-item-card__status {
+    padding: 5px 9px;
+    border: 1px solid #d97706;
+    border-radius: 999px;
+    background: rgba(217, 119, 6, 0.14);
+    color: #fbbf24;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.admin-sidebar__link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.admin-sidebar__link svg {
+    font-size: 18px;
+    flex-shrink: 0;
+    transition: transform .2s ease;
+}
+
+.admin-sidebar__link:hover svg {
+    transform: scale(1.1);
+}
+
+
+@media (max-width: 600px) {
+    .donation-modal__overlay {
+        padding: 12px;
+    }
+
+    .donation-modal {
+        padding: 22px 18px;
+        border-radius: 14px;
+    }
+
+    .donation-modal__item {
+        grid-template-columns: 1fr;
+    }
+
+    .donation-modal__actions {
+        flex-direction: column-reverse;
+    }
+
+    .donation-modal__cancel,
+    .donation-modal__confirm {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .withdraw-details__overlay {
+        padding: 12px;
+    }
+
+    .withdraw-details {
+        padding: 22px 18px;
+        border-radius: 14px;
+    }
+
+    .withdraw-details__item,
+    .withdraw-details__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .withdraw-details__image {
+        height: 200px;
+    }
+}
+
+@media (max-width: 700px) {
+    .admin-page__header {
+        flex-direction: column;
+    }
+
+    .active-items__grid {
+        grid-template-columns: 1fr;
+    }
+}
