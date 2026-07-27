@@ -2,6 +2,7 @@ import AdminLayout from "../../layouts/AdminLayout"
 import DashboardCards from "../../components/admin/DashboardCards"
 import RecentItems from "../../components/admin/RecentItems"
 import RecentWithdrawals from "../../components/admin/RecentWithdrawals"
+import QuickActions from "../../components/admin/QuickActions"
 
 function Dashboard() {
     return (
@@ -12,6 +13,8 @@ function Dashboard() {
                 <RecentItems />
                 <RecentWithdrawals />
             </div>
+
+            <QuickActions />
         </AdminLayout>
     )
 }
