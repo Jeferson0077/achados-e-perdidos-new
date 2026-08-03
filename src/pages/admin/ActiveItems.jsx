@@ -1,8 +1,14 @@
 import { useState } from "react"
+import {
+    FiCheckCircle,
+    FiSearch,
+    FiFolder,
+    FiSliders,
+} from "react-icons/fi"
+
 import { useItems } from "../../contexts/ItemsContext"
 import { ITEM_STATUS } from "../../constants/itemStatus"
 import AdminLayout from "../../layouts/AdminLayout"
-import { FiCheckCircle } from "react-icons/fi"
 
 function ActiveItems() {
     const { items, withdrawItem } = useItems()
@@ -32,11 +38,18 @@ function ActiveItems() {
     )
 
     function converterData(data) {
-        if (!data) return new Date(0)
+        if (!data) {
+            return new Date(0)
+        }
 
         if (data.includes("/")) {
             const [dia, mes, ano] = data.split("/")
-            return new Date(Number(ano), Number(mes) - 1, Number(dia))
+
+            return new Date(
+                Number(ano),
+                Number(mes) - 1,
+                Number(dia)
+            )
         }
 
         return new Date(data)
@@ -44,13 +57,13 @@ function ActiveItems() {
 
     const itensAtivos = todosItensAtivos
         .filter((item) => {
-            const correspondeCategoria =
-                !categoriaFiltro ||
-                item.categoria === categoriaFiltro
-
             const termoPesquisa = pesquisa
                 .trim()
                 .toLowerCase()
+
+            const correspondeCategoria =
+                !categoriaFiltro ||
+                item.categoria === categoriaFiltro
 
             const correspondePesquisa =
                 !termoPesquisa ||
@@ -77,15 +90,15 @@ function ActiveItems() {
             }
 
             if (ordenacao === "nome-az") {
-                return itemA.nome.localeCompare(
-                    itemB.nome,
+                return (itemA.nome || "").localeCompare(
+                    itemB.nome || "",
                     "pt-BR"
                 )
             }
 
             if (ordenacao === "nome-za") {
-                return itemB.nome.localeCompare(
-                    itemA.nome,
+                return (itemB.nome || "").localeCompare(
+                    itemA.nome || "",
                     "pt-BR"
                 )
             }
@@ -110,7 +123,9 @@ function ActiveItems() {
     function handleConfirmarRetirada(event) {
         event.preventDefault()
 
-        if (!itemSelecionado) return
+        if (!itemSelecionado) {
+            return
+        }
 
         if (!retiradoPor.trim() || !matricula.trim()) {
             return
@@ -125,8 +140,16 @@ function ActiveItems() {
         fecharModalRetirada()
     }
 
+    function limparFiltros() {
+        setPesquisa("")
+        setCategoriaFiltro("")
+        setOrdenacao("mais-recentes")
+    }
+
     function formatarData(data) {
-        if (!data) return "Data não informada"
+        if (!data) {
+            return "Data não informada"
+        }
 
         if (data.includes("/")) {
             return data
@@ -161,80 +184,96 @@ function ActiveItems() {
                             ? " item ativo"
                             : " itens ativos"}
                     </span>
+                </div>
 
-                    <div className="active-items__toolbar">
-                        <div className="active-items__filters">
+                <div className="active-items__toolbar">
+                    <div className="active-items__filters">
+                        <label className="active-items__filter active-items__filter--search">
+                            <span className="active-items__filter-label">
+                                <FiSearch />
+                                Pesquisar
+                            </span>
 
-                            <label className="active-items__filter">
-                                <label className="active-items__filter active-items__filter--search">
-                                    <span>Pesquisar</span>
+                            <input
+                                type="search"
+                                value={pesquisa}
+                                onChange={(event) =>
+                                    setPesquisa(event.target.value)
+                                }
+                                placeholder="Nome ou código do item"
+                            />
+                        </label>
 
-                                    <input
-                                        type="search"
-                                        value={pesquisa}
-                                        onChange={(event) =>
-                                            setPesquisa(event.target.value)
-                                        }
-                                        placeholder="Nome ou código do item"
-                                    />
-                                </label>
+                        <label className="active-items__filter">
+                            <span className="active-items__filter-label">
+                                <FiFolder />
+                                Categoria
+                            </span>
 
+                            <select
+                                value={categoriaFiltro}
+                                onChange={(event) =>
+                                    setCategoriaFiltro(
+                                        event.target.value
+                                    )
+                                }
+                            >
+                                <option value="">
+                                    Todas as categorias
+                                </option>
 
-                                <span>Categoria</span>
-
-                                <select
-                                    value={categoriaFiltro}
-                                    onChange={(event) =>
-                                        setCategoriaFiltro(event.target.value)
-                                    }
-                                >
-                                    <option value="">Todas as categorias</option>
-
-                                    {categoriasDisponiveis.map((categoria) => (
+                                {categoriasDisponiveis.map(
+                                    (categoria) => (
                                         <option
                                             key={categoria}
                                             value={categoria}
                                         >
                                             {categoria}
                                         </option>
-                                    ))}
-                                </select>
-                            </label>
+                                    )
+                                )}
+                            </select>
+                        </label>
 
-                            <label className="active-items__filter">
-                                <span>Ordenar por</span>
+                        <label className="active-items__filter">
+                            <span className="active-items__filter-label">
+                                <FiSliders />
+                                Ordenar por
+                            </span>
 
-                                <select
-                                    value={ordenacao}
-                                    onChange={(event) =>
-                                        setOrdenacao(event.target.value)
-                                    }
-                                >
-                                    <option value="mais-recentes">
-                                        Mais recentes
-                                    </option>
+                            <select
+                                value={ordenacao}
+                                onChange={(event) =>
+                                    setOrdenacao(event.target.value)
+                                }
+                            >
+                                <option value="mais-recentes">
+                                    Mais recentes
+                                </option>
 
-                                    <option value="mais-antigos">
-                                        Mais antigos
-                                    </option>
+                                <option value="mais-antigos">
+                                    Mais antigos
+                                </option>
 
-                                    <option value="nome-az">
-                                        Nome de A a Z
-                                    </option>
+                                <option value="nome-az">
+                                    Nome de A a Z
+                                </option>
 
-                                    <option value="nome-za">
-                                        Nome de Z a A
-                                    </option>
-                                </select>
-                            </label>
-                        </div>
-
-                        <p className="active-items__results">
-                            Exibindo <strong>{itensAtivos.length}</strong> de{" "}
-                            <strong>{todosItensAtivos.length}</strong>{" "}
-                            {todosItensAtivos.length === 1 ? "item" : "itens"}
-                        </p>
+                                <option value="nome-za">
+                                    Nome de Z a A
+                                </option>
+                            </select>
+                        </label>
                     </div>
+
+                    <p className="active-items__results">
+                        Exibindo{" "}
+                        <strong>{itensAtivos.length}</strong> de{" "}
+                        <strong>{todosItensAtivos.length}</strong>{" "}
+                        {todosItensAtivos.length === 1
+                            ? "item"
+                            : "itens"}
+                    </p>
                 </div>
 
                 {itensAtivos.length === 0 ? (
@@ -257,11 +296,7 @@ function ActiveItems() {
                             <button
                                 className="active-items__clear-filters"
                                 type="button"
-                                onClick={() => {
-                                    setPesquisa("")
-                                    setCategoriaFiltro("")
-                                    setOrdenacao("mais-recentes")
-                                }}
+                                onClick={limparFiltros}
                             >
                                 Limpar filtros
                             </button>
@@ -389,6 +424,7 @@ function ActiveItems() {
                         <div className="withdraw-modal__item">
                             <div>
                                 <span>Item</span>
+
                                 <strong>
                                     {itemSelecionado.nome}
                                 </strong>
@@ -396,6 +432,7 @@ function ActiveItems() {
 
                             <div>
                                 <span>Código</span>
+
                                 <strong>
                                     {itemSelecionado.codigo}
                                 </strong>
@@ -408,6 +445,7 @@ function ActiveItems() {
                         >
                             <label>
                                 Nome de quem retirou
+
                                 <input
                                     type="text"
                                     value={retiradoPor}
@@ -424,6 +462,7 @@ function ActiveItems() {
 
                             <label>
                                 Matrícula
+
                                 <input
                                     type="text"
                                     value={matricula}
@@ -439,6 +478,7 @@ function ActiveItems() {
 
                             <label>
                                 Observações da retirada
+
                                 <textarea
                                     value={observacaoRetirada}
                                     onChange={(event) =>
