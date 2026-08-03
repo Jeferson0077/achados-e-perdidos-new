@@ -15,7 +15,7 @@ function DashboardAlerts() {
     // cria um data nova para todos os items e começa uma contagem de 60 dias e cria um alerta para 7 dias antes
     const today = new Date()
     const donationLimit = 60
-    const warnigPeriod = 7
+    const warningPeriod = 7
 
     function getDifferenceInDays(date) {
         const itemDate = new Date(date)
