@@ -1,5 +1,7 @@
 import { NavLink } from "react-router-dom"
 
+import { FiBarChart2 } from "react-icons/fi"
+
 import {
     FiGrid,
     FiPlusCircle,
@@ -81,6 +83,18 @@ function AdminSidebar() {
                     Histórico de Doações
                 </NavLink>
             </nav>
+
+            <NavLink
+                to="/admin/relatorios"
+                className={({ isActive }) =>
+                    `admin-sidebar__link ${isActive ? "active" : ""
+                    }`
+                }
+            >
+                <FiBarChart2 />
+                Relatórios
+            </NavLink>
+
         </aside>
     )
 }
