@@ -177,6 +177,7 @@ export function ItemsProvider({ children }) {
                         ITEM_STATUS.ATIVO,
                 })
 
+
             const itemCriado =
                 await createItem(itemParaBanco)
 
