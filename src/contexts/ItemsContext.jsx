@@ -5,6 +5,7 @@ import {
     useState,
 } from "react"
 
+import { deleteImage } from "../services/storageService"
 import { ITEM_STATUS } from "../constants/itemStatus"
 
 import {
@@ -252,7 +253,28 @@ export function ItemsProvider({ children }) {
         try {
             setItemsError(null)
 
+            const itemSelecionado = items.find(
+                (item) => item.id === itemId
+            )
+
             await deleteItem(itemId)
+
+            if (
+                itemSelecionado?.fotoUrl ||
+                itemSelecionado?.foto
+            ) {
+                try {
+                    await deleteImage(
+                        itemSelecionado.fotoUrl ||
+                        itemSelecionado.foto
+                    )
+                } catch (imageError) {
+                    console.error(
+                        "O item foi excluído, mas não foi possível remover a imagem:",
+                        imageError
+                    )
+                }
+            }
 
             setItems((currentItems) =>
                 currentItems.filter(
