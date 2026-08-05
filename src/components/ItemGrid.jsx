@@ -1,28 +1,42 @@
 import { useState } from "react"
+
 import { useItems } from "../contexts/ItemsContext"
 import { ITEM_STATUS } from "../constants/itemStatus"
+
 import ItemCard from "./ItemCard"
 import ItemModal from "./ItemModal"
 
 function ItemGrid(props) {
     const { items } = useItems()
-    const [itemSelecionado, setItemSelecionado] = useState(null)
+
+    const [itemSelecionado, setItemSelecionado] =
+        useState(null)
 
     function converterData(data) {
         if (!data) {
             return new Date(0)
         }
 
-        // Formato novo: aaaa-mm-dd
+        // Formato atual do banco: aaaa-mm-dd
         if (data.includes("-")) {
             const [ano, mes, dia] = data.split("-")
-            return new Date(Number(ano), Number(mes) - 1, Number(dia))
+
+            return new Date(
+                Number(ano),
+                Number(mes) - 1,
+                Number(dia)
+            )
         }
 
-        // Compatibilidade com formato antigo: dd/mm/aaaa
+        // Compatibilidade com o formato antigo: dd/mm/aaaa
         if (data.includes("/")) {
             const [dia, mes, ano] = data.split("/")
-            return new Date(Number(ano), Number(mes) - 1, Number(dia))
+
+            return new Date(
+                Number(ano),
+                Number(mes) - 1,
+                Number(dia)
+            )
         }
 
         return new Date(0)
@@ -31,7 +45,8 @@ function ItemGrid(props) {
     const itensFiltrados = items
         .filter((item) => {
             const itemAtivo =
-                !item.status || item.status === ITEM_STATUS.ATIVO
+                !item.status ||
+                item.status === ITEM_STATUS.ATIVO
 
             if (!itemAtivo) {
                 return false
@@ -43,7 +58,8 @@ function ItemGrid(props) {
             if (props.subcategoria) {
                 return (
                     pertenceCategoria &&
-                    item.subcategoria === props.subcategoria.id
+                    item.subcategoria ===
+                    props.subcategoria.id
                 )
             }
 
@@ -58,8 +74,8 @@ function ItemGrid(props) {
                 itemB.dataEncontrado || itemB.data
             )
 
-            // Mais recentes primeiro
-            return dataB - dataA
+            // Mais antigos primeiro
+            return dataA - dataB
         })
 
     const textoQuantidade =
@@ -78,10 +94,13 @@ function ItemGrid(props) {
 
                 {itensFiltrados.length === 0 ? (
                     <div className="item-grid__empty">
-                        <span>Sem itens cadastrados</span>
+                        <span>
+                            Sem itens cadastrados
+                        </span>
 
                         <p>
-                            Não há objetos cadastrados nesta categoria.
+                            Não há objetos cadastrados nesta
+                            categoria.
                         </p>
                     </div>
                 ) : (
@@ -89,7 +108,10 @@ function ItemGrid(props) {
                         {itensFiltrados.map((item) => (
                             <ItemCard
                                 key={item.id}
-                                foto={item.foto || item.fotoUrl}
+                                foto={
+                                    item.foto ||
+                                    item.fotoUrl
+                                }
                                 nome={item.nome}
                                 codigo={item.codigo}
                                 data={
@@ -97,7 +119,9 @@ function ItemGrid(props) {
                                     item.data
                                 }
                                 onClick={() =>
-                                    setItemSelecionado(item)
+                                    setItemSelecionado(
+                                        item
+                                    )
                                 }
                             />
                         ))}
@@ -107,7 +131,9 @@ function ItemGrid(props) {
 
             <ItemModal
                 item={itemSelecionado}
-                onClose={() => setItemSelecionado(null)}
+                onClose={() =>
+                    setItemSelecionado(null)
+                }
             />
         </>
     )
