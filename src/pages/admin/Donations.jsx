@@ -3,6 +3,7 @@ import {
     FiSearch,
     FiFolder,
     FiSliders,
+    FiArchive,
 } from "react-icons/fi"
 
 import { useItems } from "../../contexts/ItemsContext"
@@ -414,7 +415,7 @@ function Donations() {
                                             />
                                         ) : (
                                             <span>
-                                                
+
                                             </span>
                                         )}
                                     </div>

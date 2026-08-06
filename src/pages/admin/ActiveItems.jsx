@@ -4,6 +4,7 @@ import {
     FiSearch,
     FiFolder,
     FiSliders,
+    FiPackage,
 } from "react-icons/fi"
 
 import { useItems } from "../../contexts/ItemsContext"
@@ -278,7 +279,7 @@ function ActiveItems() {
 
                 {itensAtivos.length === 0 ? (
                     <div className="active-items__empty">
-                        <span>📦</span>
+                        <span><FiPackage /></span>
 
                         <h3>
                             {todosItensAtivos.length === 0

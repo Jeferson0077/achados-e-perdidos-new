@@ -7,6 +7,7 @@ import {
     FiPackage,
 } from "react-icons/fi"
 
+
 import { useItems } from "../../contexts/ItemsContext"
 import { ITEM_STATUS } from "../../constants/itemStatus"
 import AdminLayout from "../../layouts/AdminLayout"
@@ -238,8 +239,6 @@ function WithdrawnItems() {
                 {itensRetirados.length === 0 ? (
                     <div className="active-items__empty">
                         <FiCheckCircle />
-
-                        <h3>Nenhum item retirado</h3>
 
                         <h3>
                             {todosItensRetirados.length === 0
