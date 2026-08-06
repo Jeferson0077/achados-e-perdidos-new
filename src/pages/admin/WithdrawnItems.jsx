@@ -3,6 +3,8 @@ import {
     FiSearch,
     FiFolder,
     FiSliders,
+    FiCheckCircle,
+    FiPackage,
 } from "react-icons/fi"
 
 import { useItems } from "../../contexts/ItemsContext"
@@ -235,7 +237,7 @@ function WithdrawnItems() {
 
                 {itensRetirados.length === 0 ? (
                     <div className="active-items__empty">
-                        <span>📦</span>
+                        <FiCheckCircle />
 
                         <h3>Nenhum item retirado</h3>
 

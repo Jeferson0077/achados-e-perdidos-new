@@ -407,7 +407,7 @@ function ActiveItems() {
                         </button>
 
                         <div className="withdraw-modal__header">
-                            <span>📦</span>
+                            <FiCheckCircle />
 
                             <div>
                                 <h2 id="withdraw-modal-title">

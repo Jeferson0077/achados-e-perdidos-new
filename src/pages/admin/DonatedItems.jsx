@@ -3,6 +3,8 @@ import {
     FiSearch,
     FiFolder,
     FiSliders,
+    FiCheckCircle,
+    FiPackage,
 } from "react-icons/fi"
 import { useItems } from "../../contexts/ItemsContext"
 import { ITEM_STATUS } from "../../constants/itemStatus"
@@ -221,7 +223,7 @@ function DonatedItems() {
 
                 {itensDoados.length === 0 ? (
                     <div className="active-items__empty">
-                        <span>📦</span>
+                        <FiCheckCircle />
 
                         <h3>
                             {todosItensDoados.length === 0
@@ -333,7 +335,7 @@ function DonatedItems() {
                         </button>
 
                         <div className="withdraw-details__header">
-                            <span>📦</span>
+                            <FiCheckCircle />
 
                             <div>
                                 <h2 id="donated-details-title">

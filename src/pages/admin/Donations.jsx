@@ -363,7 +363,7 @@ function Donations() {
                 {itensParaDoacao.length ===
                     0 ? (
                     <div className="active-items__empty">
-                        <span>🎁</span>
+                        <FiCheckCircle />
 
                         <h3>
                             {todosItensParaDoacao.length ===
