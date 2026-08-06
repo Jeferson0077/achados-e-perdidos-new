@@ -25,7 +25,7 @@ function ItemCard(props) {
                 {props.foto ? (
                     <img src={props.foto} alt={props.nome} />
                 ) : (
-                    <span>📷</span>
+                    <span></span>
                 )}
             </div>
 

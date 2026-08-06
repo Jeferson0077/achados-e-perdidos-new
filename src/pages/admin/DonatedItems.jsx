@@ -5,6 +5,7 @@ import {
     FiSliders,
     FiCheckCircle,
     FiPackage,
+    FiGift,
 } from "react-icons/fi"
 import { useItems } from "../../contexts/ItemsContext"
 import { ITEM_STATUS } from "../../constants/itemStatus"
@@ -223,7 +224,7 @@ function DonatedItems() {
 
                 {itensDoados.length === 0 ? (
                     <div className="active-items__empty">
-                        <FiCheckCircle />
+                        <FiGift />
 
                         <h3>
                             {todosItensDoados.length === 0

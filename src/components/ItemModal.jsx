@@ -57,7 +57,7 @@ function ItemModal(props) {
                                     />
                                 ) : (
                                     <div className="item-modal__placeholder">
-                                        📷
+
                                     </div>
                                 )}
                             </TransformComponent>
