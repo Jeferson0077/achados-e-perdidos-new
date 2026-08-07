@@ -2,13 +2,19 @@ import { supabase } from "../lib/supabase"
 
 const BUCKET_NAME = "item-images"
 
-export async function uploadImage(file) {
+export async function uploadImage(
+    file
+) {
     if (!file) {
         return null
     }
 
     const extensao =
-        file.name.split(".").pop()?.toLowerCase() || "jpg"
+        file.name
+            .split(".")
+            .pop()
+            ?.toLowerCase() ||
+        "jpg"
 
     const nomeArquivo =
         `${crypto.randomUUID()}.${extensao}`
@@ -16,27 +22,39 @@ export async function uploadImage(file) {
     const caminhoArquivo =
         `items/${nomeArquivo}`
 
-    const { error: uploadError } =
-        await supabase.storage
-            .from(BUCKET_NAME)
-            .upload(caminhoArquivo, file, {
+    const {
+        error: uploadError,
+    } = await supabase.storage
+        .from(BUCKET_NAME)
+        .upload(
+            caminhoArquivo,
+            file,
+            {
                 cacheControl: "3600",
                 upsert: false,
-                contentType: file.type,
-            })
+                contentType:
+                    file.type ||
+                    "image/jpeg",
+            }
+        )
 
     if (uploadError) {
         throw uploadError
     }
 
-    const { data } = supabase.storage
-        .from(BUCKET_NAME)
-        .getPublicUrl(caminhoArquivo)
+    const { data } =
+        supabase.storage
+            .from(BUCKET_NAME)
+            .getPublicUrl(
+                caminhoArquivo
+            )
 
     return data.publicUrl
 }
 
-export async function deleteImage(imageUrl) {
+export async function deleteImage(
+    imageUrl
+) {
     if (!imageUrl) {
         return
     }
@@ -48,12 +66,25 @@ export async function deleteImage(imageUrl) {
         imageUrl.split(marcador)[1]
 
     if (!caminhoArquivo) {
+        console.warn(
+            "Não foi possível identificar o caminho da imagem:",
+            imageUrl
+        )
+
         return
     }
 
-    const { error } = await supabase.storage
-        .from(BUCKET_NAME)
-        .remove([caminhoArquivo])
+    const caminhoDecodificado =
+        decodeURIComponent(
+            caminhoArquivo
+        )
+
+    const { error } =
+        await supabase.storage
+            .from(BUCKET_NAME)
+            .remove([
+                caminhoDecodificado,
+            ])
 
     if (error) {
         throw error

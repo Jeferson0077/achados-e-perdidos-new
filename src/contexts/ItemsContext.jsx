@@ -9,10 +9,10 @@ import { deleteImage } from "../services/storageService"
 import { ITEM_STATUS } from "../constants/itemStatus"
 
 import {
-    getItems,
     createItem,
-    updateItem as updateItemService,
     deleteItem,
+    getItems,
+    updateItem as updateItemService,
 } from "../services/itemsService"
 
 const ItemsContext = createContext(null)
@@ -23,8 +23,10 @@ function converterItemDoBanco(item) {
         codigo: item.codigo,
         nome: item.nome,
         categoria: item.categoria,
-        subcategoria: item.subcategoria,
-        observacoes: item.observacoes,
+        subcategoria:
+            item.subcategoria,
+        observacoes:
+            item.observacoes,
 
         status: item.status,
 
@@ -32,20 +34,38 @@ function converterItemDoBanco(item) {
         fotoUrl: item.foto_url,
 
         data: item.data_encontrado,
-        dataEncontrado: item.data_encontrado,
+        dataEncontrado:
+            item.data_encontrado,
 
-        dataRetirada: item.data_retirada,
-        retiradoPor: item.retirado_por,
-        matriculaRetirada: item.matricula_retirada,
-        observacaoRetirada: item.observacao_retirada,
+        dataRetirada:
+            item.data_retirada,
 
-        dataDoacao: item.data_doacao,
-        destinoDoacao: item.destino_doacao,
-        responsavelDoacao: item.responsavel_doacao,
-        observacaoDoacao: item.observacao_doacao,
+        retiradoPor:
+            item.retirado_por,
 
-        createdAt: item.created_at,
-        updatedAt: item.updated_at,
+        matriculaRetirada:
+            item.matricula_retirada,
+
+        observacaoRetirada:
+            item.observacao_retirada,
+
+        dataDoacao:
+            item.data_doacao,
+
+        destinoDoacao:
+            item.destino_doacao,
+
+        responsavelDoacao:
+            item.responsavel_doacao,
+
+        observacaoDoacao:
+            item.observacao_doacao,
+
+        createdAt:
+            item.created_at,
+
+        updatedAt:
+            item.updated_at,
     }
 }
 
@@ -53,15 +73,18 @@ function converterItemParaBanco(item) {
     const itemBanco = {}
 
     if ("codigo" in item) {
-        itemBanco.codigo = item.codigo
+        itemBanco.codigo =
+            item.codigo
     }
 
     if ("nome" in item) {
-        itemBanco.nome = item.nome
+        itemBanco.nome =
+            item.nome
     }
 
     if ("categoria" in item) {
-        itemBanco.categoria = item.categoria
+        itemBanco.categoria =
+            item.categoria
     }
 
     if ("subcategoria" in item) {
@@ -75,17 +98,27 @@ function converterItemParaBanco(item) {
     }
 
     if ("status" in item) {
-        itemBanco.status = item.status
+        itemBanco.status =
+            item.status
     }
 
-    if ("foto" in item || "fotoUrl" in item) {
+    if (
+        "foto" in item ||
+        "fotoUrl" in item
+    ) {
         itemBanco.foto_url =
-            item.fotoUrl || item.foto || null
+            item.fotoUrl ||
+            item.foto ||
+            null
     }
 
-    if ("dataEncontrado" in item || "data" in item) {
+    if (
+        "dataEncontrado" in item ||
+        "data" in item
+    ) {
         itemBanco.data_encontrado =
-            item.dataEncontrado || item.data
+            item.dataEncontrado ||
+            item.data
     }
 
     if ("dataRetirada" in item) {
@@ -98,14 +131,20 @@ function converterItemParaBanco(item) {
             item.retiradoPor || null
     }
 
-    if ("matriculaRetirada" in item) {
+    if (
+        "matriculaRetirada" in item
+    ) {
         itemBanco.matricula_retirada =
-            item.matriculaRetirada || null
+            item.matriculaRetirada ||
+            null
     }
 
-    if ("observacaoRetirada" in item) {
+    if (
+        "observacaoRetirada" in item
+    ) {
         itemBanco.observacao_retirada =
-            item.observacaoRetirada || null
+            item.observacaoRetirada ||
+            null
     }
 
     if ("dataDoacao" in item) {
@@ -118,25 +157,45 @@ function converterItemParaBanco(item) {
             item.destinoDoacao || null
     }
 
-    if ("responsavelDoacao" in item) {
+    if (
+        "responsavelDoacao" in item
+    ) {
         itemBanco.responsavel_doacao =
-            item.responsavelDoacao || null
+            item.responsavelDoacao ||
+            null
     }
 
-    if ("observacaoDoacao" in item) {
+    if (
+        "observacaoDoacao" in item
+    ) {
         itemBanco.observacao_doacao =
-            item.observacaoDoacao || null
+            item.observacaoDoacao ||
+            null
     }
 
-    itemBanco.updated_at = new Date().toISOString()
+    itemBanco.updated_at =
+        new Date().toISOString()
 
     return itemBanco
 }
 
-export function ItemsProvider({ children }) {
-    const [items, setItems] = useState([])
-    const [loadingItems, setLoadingItems] = useState(true)
-    const [itemsError, setItemsError] = useState(null)
+export function ItemsProvider({
+    children,
+}) {
+    const [
+        items,
+        setItems,
+    ] = useState([])
+
+    const [
+        loadingItems,
+        setLoadingItems,
+    ] = useState(true)
+
+    const [
+        itemsError,
+        setItemsError,
+    ] = useState(null)
 
     useEffect(() => {
         async function carregarItens() {
@@ -144,10 +203,13 @@ export function ItemsProvider({ children }) {
                 setLoadingItems(true)
                 setItemsError(null)
 
-                const dados = await getItems()
+                const dados =
+                    await getItems()
 
                 setItems(
-                    dados.map(converterItemDoBanco)
+                    dados.map(
+                        converterItemDoBanco
+                    )
                 )
             } catch (error) {
                 console.error(
@@ -173,22 +235,28 @@ export function ItemsProvider({ children }) {
             const itemParaBanco =
                 converterItemParaBanco({
                     ...newItem,
+
                     status:
                         newItem.status ||
                         ITEM_STATUS.ATIVO,
                 })
 
-
             const itemCriado =
-                await createItem(itemParaBanco)
+                await createItem(
+                    itemParaBanco
+                )
 
             const itemConvertido =
-                converterItemDoBanco(itemCriado)
+                converterItemDoBanco(
+                    itemCriado
+                )
 
-            setItems((currentItems) => [
-                itemConvertido,
-                ...currentItems,
-            ])
+            setItems(
+                (currentItems) => [
+                    itemConvertido,
+                    ...currentItems,
+                ]
+            )
 
             return itemConvertido
         } catch (error) {
@@ -213,7 +281,9 @@ export function ItemsProvider({ children }) {
             setItemsError(null)
 
             const dadosParaBanco =
-                converterItemParaBanco(updatedData)
+                converterItemParaBanco(
+                    updatedData
+                )
 
             const itemAtualizado =
                 await updateItemService(
@@ -226,12 +296,15 @@ export function ItemsProvider({ children }) {
                     itemAtualizado
                 )
 
-            setItems((currentItems) =>
-                currentItems.map((item) =>
-                    item.id === itemId
-                        ? itemConvertido
-                        : item
-                )
+            setItems(
+                (currentItems) =>
+                    currentItems.map(
+                        (item) =>
+                            item.id ===
+                                itemId
+                                ? itemConvertido
+                                : item
+                    )
             )
 
             return itemConvertido
@@ -253,9 +326,11 @@ export function ItemsProvider({ children }) {
         try {
             setItemsError(null)
 
-            const itemSelecionado = items.find(
-                (item) => item.id === itemId
-            )
+            const itemSelecionado =
+                items.find(
+                    (item) =>
+                        item.id === itemId
+                )
 
             await deleteItem(itemId)
 
@@ -276,10 +351,13 @@ export function ItemsProvider({ children }) {
                 }
             }
 
-            setItems((currentItems) =>
-                currentItems.filter(
-                    (item) => item.id !== itemId
-                )
+            setItems(
+                (currentItems) =>
+                    currentItems.filter(
+                        (item) =>
+                            item.id !==
+                            itemId
+                    )
             )
         } catch (error) {
             console.error(
@@ -300,9 +378,12 @@ export function ItemsProvider({ children }) {
         withdrawalData = {}
     ) {
         return updateItem(itemId, {
-            status: ITEM_STATUS.RETIRADO,
+            status:
+                ITEM_STATUS.RETIRADO,
+
             dataRetirada:
                 new Date().toISOString(),
+
             ...withdrawalData,
         })
     }
@@ -312,9 +393,12 @@ export function ItemsProvider({ children }) {
         donationData = {}
     ) {
         return updateItem(itemId, {
-            status: ITEM_STATUS.DOADO,
+            status:
+                ITEM_STATUS.DOADO,
+
             dataDoacao:
                 new Date().toISOString(),
+
             ...donationData,
         })
     }
@@ -338,7 +422,8 @@ export function ItemsProvider({ children }) {
 }
 
 export function useItems() {
-    const context = useContext(ItemsContext)
+    const context =
+        useContext(ItemsContext)
 
     if (!context) {
         throw new Error(

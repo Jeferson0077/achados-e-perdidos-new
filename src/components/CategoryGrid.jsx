@@ -1,5 +1,7 @@
 import CategoryCard from "./CategoryCard"
+
 import { useItems } from "../contexts/ItemsContext"
+import { ITEM_STATUS } from "../constants/itemStatus"
 
 function CategoryGrid(props) {
     const { items } = useItems()
@@ -9,8 +11,21 @@ function CategoryGrid(props) {
             <div className="category-grid">
                 {props.categories.map((category) => {
                     const quantidadeItens = items.filter(
-                        (item) =>
-                            item.categoria === category.id
+                        (item) => {
+                            const itemAtivo =
+                                !item.status ||
+                                item.status ===
+                                    ITEM_STATUS.ATIVO
+
+                            const pertenceCategoria =
+                                item.categoria ===
+                                category.id
+
+                            return (
+                                itemAtivo &&
+                                pertenceCategoria
+                            )
+                        }
                     ).length
 
                     return (
@@ -18,9 +33,13 @@ function CategoryGrid(props) {
                             key={category.id}
                             nome={category.nome}
                             icone={category.icone}
-                            quantidadeItens={quantidadeItens}
+                            quantidadeItens={
+                                quantidadeItens
+                            }
                             onClick={() =>
-                                props.onSelectCategory(category)
+                                props.onSelectCategory(
+                                    category
+                                )
                             }
                         />
                     )

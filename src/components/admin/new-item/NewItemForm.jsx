@@ -63,6 +63,16 @@ function NewItemForm() {
         }
     }, [fotoPreview])
 
+    function limparMensagem() {
+        setMensagem("")
+        setTipoMensagem("")
+    }
+
+    function mostrarErro(texto) {
+        setMensagem(texto)
+        setTipoMensagem("erro")
+    }
+
     function handleChange(event) {
         const { name, value } = event.target
 
@@ -75,8 +85,7 @@ function NewItemForm() {
             }),
         }))
 
-        setMensagem("")
-        setTipoMensagem("")
+        limparMensagem()
     }
 
     function handleFotoChange(event) {
@@ -87,10 +96,10 @@ function NewItemForm() {
         }
 
         if (!arquivo.type.startsWith("image/")) {
-            setMensagem(
+            mostrarErro(
                 "Selecione um arquivo de imagem válido."
             )
-            setTipoMensagem("erro")
+
             event.target.value = ""
             return
         }
@@ -98,10 +107,10 @@ function NewItemForm() {
         const tamanhoMaximo = 5 * 1024 * 1024
 
         if (arquivo.size > tamanhoMaximo) {
-            setMensagem(
+            mostrarErro(
                 "A imagem deve ter no máximo 5 MB."
             )
-            setTipoMensagem("erro")
+
             event.target.value = ""
             return
         }
@@ -115,8 +124,8 @@ function NewItemForm() {
 
         setArquivoFoto(arquivo)
         setFotoPreview(novaPreview)
-        setMensagem("")
-        setTipoMensagem("")
+
+        limparMensagem()
     }
 
     function removerFoto() {
@@ -126,6 +135,13 @@ function NewItemForm() {
 
         setArquivoFoto(null)
         setFotoPreview("")
+
+        const inputFoto =
+            document.getElementById("foto")
+
+        if (inputFoto) {
+            inputFoto.value = ""
+        }
     }
 
     function gerarCodigo() {
@@ -133,9 +149,14 @@ function NewItemForm() {
             .map((item) => {
                 const codigo = item.codigo ?? ""
 
-                return Number(
+                const codigoNumerico =
                     codigo.replace(/\D/g, "")
-                )
+
+                if (!codigoNumerico) {
+                    return null
+                }
+
+                return Number(codigoNumerico)
             })
             .filter((numero) =>
                 Number.isFinite(numero)
@@ -148,35 +169,29 @@ function NewItemForm() {
 
         const proximoNumero = maiorNumero + 1
 
-        return `CAP-${String(proximoNumero).padStart(
+        return String(proximoNumero).padStart(
             3,
             "0"
-        )}`
+        )
     }
 
     async function handleSubmit(event) {
         event.preventDefault()
 
-        if (enviando) {
-            return
-        }
-
         const nomeLimpo =
             formData.nome.trim()
 
         if (!nomeLimpo) {
-            setMensagem(
+            mostrarErro(
                 "Informe o nome do item."
             )
-            setTipoMensagem("erro")
             return
         }
 
         if (!formData.categoria) {
-            setMensagem(
+            mostrarErro(
                 "Selecione uma categoria."
             )
-            setTipoMensagem("erro")
             return
         }
 
@@ -184,18 +199,23 @@ function NewItemForm() {
             subcategoriasDisponiveis.length > 0 &&
             !formData.subcategoria
         ) {
-            setMensagem(
+            mostrarErro(
                 "Selecione uma subcategoria."
             )
-            setTipoMensagem("erro")
             return
         }
 
         if (!formData.dataEncontrado) {
-            setMensagem(
+            mostrarErro(
                 "Informe a data em que o item foi encontrado."
             )
-            setTipoMensagem("erro")
+            return
+        }
+
+        if (!arquivoFoto) {
+            mostrarErro(
+                "Adicione uma foto antes de cadastrar o item."
+            )
             return
         }
 
@@ -203,20 +223,19 @@ function NewItemForm() {
 
         try {
             setEnviando(true)
-            setMensagem("")
-            setTipoMensagem("")
+            limparMensagem()
 
-            if (arquivoFoto) {
-                fotoUrlEnviada =
-                    await uploadImage(arquivoFoto)
-            }
+            fotoUrlEnviada =
+                await uploadImage(arquivoFoto)
 
-            const codigoGerado = gerarCodigo()
+            const codigoGerado =
+                gerarCodigo()
 
             const novoItem = {
                 codigo: codigoGerado,
                 nome: nomeLimpo,
-                categoria: formData.categoria,
+                categoria:
+                    formData.categoria,
 
                 subcategoria:
                     formData.subcategoria || null,
@@ -251,14 +270,11 @@ function NewItemForm() {
                 error
             )
 
-            /*
-             * Caso a foto tenha sido enviada, mas o cadastro
-             * no banco falhe, removemos a imagem para não
-             * deixar um arquivo perdido no Storage.
-             */
             if (fotoUrlEnviada) {
                 try {
-                    await deleteImage(fotoUrlEnviada)
+                    await deleteImage(
+                        fotoUrlEnviada
+                    )
                 } catch (deleteError) {
                     console.error(
                         "Erro ao remover imagem após falha:",
@@ -267,11 +283,9 @@ function NewItemForm() {
                 }
             }
 
-            setMensagem(
+            mostrarErro(
                 "Não foi possível cadastrar o item. Tente novamente."
             )
-
-            setTipoMensagem("erro")
         } finally {
             setEnviando(false)
         }
@@ -430,12 +444,14 @@ function NewItemForm() {
 
                     <input
                         id="foto"
+                        name="foto"
                         className="new-item-form__photo-input"
                         type="file"
                         accept="image/jpeg,image/png,image/webp"
                         capture="environment"
                         onChange={handleFotoChange}
                         disabled={enviando}
+                        required
                     />
                 </div>
             </div>
@@ -487,7 +503,10 @@ function NewItemForm() {
             <button
                 className="new-item-form__submit"
                 type="submit"
-                disabled={enviando}
+                disabled={
+                    !arquivoFoto ||
+                    enviando
+                }
             >
                 {enviando
                     ? "Enviando foto e cadastrando..."

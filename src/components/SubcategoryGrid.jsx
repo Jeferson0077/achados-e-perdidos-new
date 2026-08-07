@@ -1,5 +1,7 @@
 import SubcategoryCard from "./SubcategoryCard"
+
 import { useItems } from "../contexts/ItemsContext"
+import { ITEM_STATUS } from "../constants/itemStatus"
 
 function SubcategoryGrid(props) {
     const { items } = useItems()
@@ -10,13 +12,26 @@ function SubcategoryGrid(props) {
                 {props.subcategorias.map(
                     (subcategory) => {
                         const quantidadeItens =
-                            items.filter(
-                                (item) =>
+                            items.filter((item) => {
+                                const itemAtivo =
+                                    !item.status ||
+                                    item.status ===
+                                    ITEM_STATUS.ATIVO
+
+                                const pertenceCategoria =
                                     item.categoria ===
-                                    props.categoriaId &&
+                                    props.categoriaId
+
+                                const pertenceSubcategoria =
                                     item.subcategoria ===
                                     subcategory.id
-                            ).length
+
+                                return (
+                                    itemAtivo &&
+                                    pertenceCategoria &&
+                                    pertenceSubcategoria
+                                )
+                            }).length
 
                         return (
                             <SubcategoryCard
