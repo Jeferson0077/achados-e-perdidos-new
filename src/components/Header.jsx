@@ -1,4 +1,4 @@
-import logo from "../assets/images/logo-achados-perdidos.png";
+import logo from "../assets/images/logo-cap.png";
 
 function Header() {
     return (

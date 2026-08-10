@@ -22,8 +22,8 @@
 }
 
 .header__logo {
-    width: 230px;
-    height: 150px;
+    width: 200px;
+    height: 65px;
     display: grid;
     place-items: center;
     color: var(--text-secondary);
