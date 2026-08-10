@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+
   workflow_dispatch:
 
 permissions:
@@ -32,6 +33,22 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Verifica se o GitHub Actions recebeu
+      # a Site Key do hCaptcha.
+      # O valor da chave NÃO é exibido.
+      - name: Check hCaptcha variable
+        env:
+          VITE_HCAPTCHA_SITE_KEY: ${{ secrets.VITE_HCAPTCHA_SITE_KEY }}
+        run: |
+          if [ -z "$VITE_HCAPTCHA_SITE_KEY" ]; then
+            echo "HCAPTCHA SITE KEY AUSENTE"
+            exit 1
+          else
+            echo "HCAPTCHA SITE KEY CARREGADA"
+          fi
+
+      # Faz o build do Vite passando a Site Key
+      # como variável de ambiente.
       - name: Build
         env:
           VITE_HCAPTCHA_SITE_KEY: ${{ secrets.VITE_HCAPTCHA_SITE_KEY }}
