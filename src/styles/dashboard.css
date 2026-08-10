@@ -569,61 +569,256 @@
     margin-right: 20px !important;
 }
 
+/* ======================================================
+   RESPONSIVIDADE
+   ====================================================== */
+
+
+/* ======================================================
+   TELAS ATÉ 1100px
+   Tablets / notebooks menores
+   ====================================================== */
+
+@media (max-width: 1100px) {
+
+    /* Cards principais */
+    .dashboard-cards {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    /* Alertas */
+    .dashboard-alerts {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    /* Ações rápidas */
+    .quick-actions {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+}
+
+
+/* ======================================================
+   TELAS ATÉ 1050px
+   Relatórios
+   ====================================================== */
+
 @media (max-width: 1050px) {
+
     .reports-summary {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
     }
 }
 
-@media (max-width: 750px) {
-    .reports-secondary {
-        grid-template-columns: 1fr;
-    }
-}
 
-@media (max-width: 550px) {
-    .reports-summary {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 1100px) {
-    .dashboard-alerts {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-@media (max-width: 600px) {
-    .dashboard-alerts {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 1100px) {
-    .quick-actions {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 600px) {
-    .quick-actions {
-        grid-template-columns: 1fr;
-    }
-}
+/* ======================================================
+   TELAS ATÉ 900px
+   Conteúdo principal do dashboard
+   ====================================================== */
 
 @media (max-width: 900px) {
+
     .dashboard-content {
         grid-template-columns: 1fr;
     }
 }
 
+
+/* ======================================================
+   TELAS ATÉ 750px
+   Relatórios secundários
+   ====================================================== */
+
+@media (max-width: 750px) {
+
+    .reports-secondary {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ======================================================
+   CELULAR / TABLET PEQUENO
+   Até 700px
+   ====================================================== */
+
+@media (max-width: 700px) {
+
+    /* ------------------------------
+       Layout administrativo
+       ------------------------------ */
+
+    .admin-layout {
+        display: block;
+    }
+
+    .admin-sidebar {
+        width: 100%;
+        min-height: auto;
+        position: static;
+
+        padding: 16px;
+
+        border-right: none;
+        border-bottom:
+            1px solid var(--border-color);
+    }
+
+    /* ------------------------------
+       Logo da sidebar
+       ------------------------------ */
+
+    .admin-sidebar__logo {
+        margin-bottom: 16px;
+        text-align: center;
+    }
+
+    .admin-sidebar__logo h1 {
+        font-size: 24px;
+        white-space: nowrap;
+    }
+
+    /* ------------------------------
+       Navegação
+       ------------------------------ */
+
+    .admin-sidebar__nav {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 10px;
+    }
+
+    .admin-sidebar__nav a {
+        min-height: 46px;
+
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+
+        gap: 8px;
+
+        padding: 10px 12px;
+
+        border:
+            1px solid var(--border-color);
+
+        border-radius: 10px;
+
+        font-size: 13px;
+    }
+
+    /* ------------------------------
+       Conteúdo administrativo
+       ------------------------------ */
+
+    .admin-content {
+        width: 100%;
+        margin-left: 0;
+        padding: 16px;
+    }
+
+    .admin-page__header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .admin-page__header h1,
+    .admin-page__header h2 {
+        font-size: 28px;
+        line-height: 1.1;
+    }
+
+    /* ------------------------------
+       Cards
+       ------------------------------ */
+
+    .dashboard-cards,
+    .admin-dashboard__cards {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .dashboard-card,
+    .admin-dashboard__card {
+        min-height: 120px;
+    }
+}
+
+
+/* ======================================================
+   CELULAR
+   Até 650px
+   ====================================================== */
+
+@media (max-width: 650px) {
+
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-card {
+        min-height: 110px;
+    }
+}
+
+
+/* ======================================================
+   CELULAR
+   Até 600px
+   ====================================================== */
+
+@media (max-width: 600px) {
+
+    /* Alertas em uma coluna */
+    .dashboard-alerts {
+        grid-template-columns: 1fr;
+    }
+
+    /* Ações rápidas em uma coluna */
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ======================================================
+   CELULAR PEQUENO
+   Até 550px
+   ====================================================== */
+
 @media (max-width: 550px) {
+
+    /* ------------------------------
+       Relatórios
+       ------------------------------ */
+
+    .reports-summary {
+        grid-template-columns: 1fr;
+    }
+
+    /* ------------------------------
+       Painéis
+       ------------------------------ */
+
     .dashboard-panel {
         padding: 18px;
     }
 
+    /* ------------------------------
+       Itens recentes
+       ------------------------------ */
+
     .recent-item {
-        grid-template-columns: 42px minmax(0, 1fr);
+        grid-template-columns:
+            42px minmax(0, 1fr);
     }
 
     .recent-item__image {
@@ -631,23 +826,9 @@
         height: 42px;
     }
 
+    /* No celular escondemos os detalhes
+       laterais para ganhar espaço */
     .recent-item__details {
         display: none;
-    }
-}
-
-@media (max-width: 1100px) {
-    .dashboard-cards {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-@media (max-width: 650px) {
-    .dashboard-cards {
-        grid-template-columns: 1fr;
-    }
-
-    .dashboard-card {
-        min-height: 110px;
     }
 }
