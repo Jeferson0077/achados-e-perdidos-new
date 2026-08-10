@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+
   workflow_dispatch:
 
 permissions:
@@ -19,9 +20,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      VITE_HCAPTCHA_SITE_KEY: ${{ vars.VITE_HCAPTCHA_SITE_KEY }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,15 +32,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Check hCaptcha variable
-        run: |
-          if [ -z "$VITE_HCAPTCHA_SITE_KEY" ]; then
-            echo "HCAPTCHA SITE KEY AUSENTE"
-            exit 1
-          else
-            echo "HCAPTCHA SITE KEY CARREGADA"
-          fi
 
       - name: Build
         run: npm run build

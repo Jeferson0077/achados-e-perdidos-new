@@ -272,11 +272,6 @@
     text-align: center;
 }
 
-.login-form__captcha {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
 
 @media (max-width: 520px) {
     .login-page {

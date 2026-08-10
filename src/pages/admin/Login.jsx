@@ -1,8 +1,4 @@
-import {
-    useRef,
-    useState,
-} from "react"
-
+import { useState } from "react"
 import "../../styles/login.css"
 
 import {
@@ -17,8 +13,6 @@ import {
     FiLogIn,
     FiUser,
 } from "react-icons/fi"
-
-import HCaptcha from "@hcaptcha/react-hcaptcha"
 
 import { useAuth } from "../../contexts/AuthContext"
 
@@ -43,25 +37,9 @@ function Login() {
     ] = useState("")
 
     const [
-        captchaToken,
-        setCaptchaToken,
-    ] = useState(null)
-
-    const [
         enviando,
         setEnviando,
     ] = useState(false)
-
-    const captchaRef =
-        useRef(null)
-
-    const siteKey =
-        import.meta.env.VITE_HCAPTCHA_SITE_KEY
-    console.log(
-        "HCaptcha sitekey carregada:",
-        Boolean(siteKey),
-        siteKey?.slice(0, 6)
-    )
 
     if (user) {
         return (
@@ -85,13 +63,6 @@ function Login() {
             return
         }
 
-        if (!captchaToken) {
-            setMensagemErro(
-                "Confirme que você não é um robô."
-            )
-            return
-        }
-
         try {
             setEnviando(true)
             setMensagemErro("")
@@ -99,22 +70,17 @@ function Login() {
             const resultado =
                 await login(
                     emailLimpo,
-                    senha,
-                    captchaToken
+                    senha
                 )
 
             if (!resultado.success) {
                 setMensagemErro(
                     "E-mail ou senha inválidos."
                 )
-
-                setCaptchaToken(null)
-
-                captchaRef.current
-                    ?.resetCaptcha()
-
                 return
             }
+
+            setMensagemErro("")
 
             navigate(
                 "/admin/dashboard",
@@ -129,13 +95,8 @@ function Login() {
             )
 
             setMensagemErro(
-                "Não foi possível realizar o login."
+                "Não foi possível realizar o login. Tente novamente."
             )
-
-            setCaptchaToken(null)
-
-            captchaRef.current
-                ?.resetCaptcha()
         } finally {
             setEnviando(false)
         }
@@ -159,7 +120,9 @@ function Login() {
                         Área administrativa
                     </span>
 
-                    <h1>Bem-vindo</h1>
+                    <h1>
+                        Bem-vindo
+                    </h1>
 
                     <p>
                         Entre com suas credenciais
@@ -173,7 +136,9 @@ function Login() {
                     onSubmit={handleSubmit}
                 >
                     <label className="login-form__field">
-                        <span>E-mail</span>
+                        <span>
+                            E-mail
+                        </span>
 
                         <div className="login-form__input-wrapper">
                             <FiUser />
@@ -198,7 +163,9 @@ function Login() {
                     </label>
 
                     <label className="login-form__field">
-                        <span>Senha</span>
+                        <span>
+                            Senha
+                        </span>
 
                         <div className="login-form__input-wrapper">
                             <FiLock />
@@ -248,33 +215,6 @@ function Login() {
                         </div>
                     </label>
 
-                    <div className="login-form__captcha">
-                        <HCaptcha
-                            ref={captchaRef}
-                            sitekey={siteKey}
-                            theme="dark"
-                            onVerify={(token) => {
-                                setCaptchaToken(token)
-                                setMensagemErro("")
-                            }}
-                            onExpire={() => {
-                                setCaptchaToken(null)
-                            }}
-                            onError={(erro) => {
-                                console.error(
-                                    "Erro do hCaptcha:",
-                                    erro
-                                )
-
-                                setCaptchaToken(null)
-
-                                setMensagemErro(
-                                    `Erro no CAPTCHA: ${erro}`
-                                )
-                            }}
-                        />
-                    </div>
-
                     {mensagemErro && (
                         <p
                             className="login-form__error"
@@ -287,10 +227,7 @@ function Login() {
                     <button
                         className="login-form__submit"
                         type="submit"
-                        disabled={
-                            enviando ||
-                            !captchaToken
-                        }
+                        disabled={enviando}
                     >
                         <FiLogIn />
 
