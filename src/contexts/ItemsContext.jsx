@@ -5,6 +5,8 @@ import {
     useState,
 } from "react"
 
+import { supabase } from "../lib/supabase"
+
 import { deleteImage } from "../services/storageService"
 import { ITEM_STATUS } from "../constants/itemStatus"
 
@@ -15,21 +17,50 @@ import {
     updateItem as updateItemService,
 } from "../services/itemsService"
 
+
+// ======================================================
+// CRIAÇÃO DO CONTEXTO
+// ======================================================
+
+// O contexto permite compartilhar os itens entre várias
+// páginas/componentes sem precisar passar props manualmente.
 const ItemsContext = createContext(null)
 
+
+// ======================================================
+// CONVERSÃO: SUPABASE -> REACT
+// ======================================================
+
+// O Supabase trabalha com nomes como:
+//
+// foto_url
+// data_encontrado
+// data_retirada
+//
+// No React estamos usando:
+//
+// fotoUrl
+// dataEncontrado
+// dataRetirada
+//
+// Esta função converte o formato recebido do banco
+// para o formato utilizado pela aplicação.
 function converterItemDoBanco(item) {
     return {
         id: item.id,
+
         codigo: item.codigo,
         nome: item.nome,
+
         categoria: item.categoria,
-        subcategoria:
-            item.subcategoria,
-        observacoes:
-            item.observacoes,
+        subcategoria: item.subcategoria,
+
+        observacoes: item.observacoes,
 
         status: item.status,
 
+        // Mantemos os dois nomes por compatibilidade
+        // com componentes antigos do projeto.
         foto: item.foto_url,
         fotoUrl: item.foto_url,
 
@@ -69,6 +100,18 @@ function converterItemDoBanco(item) {
     }
 }
 
+
+// ======================================================
+// CONVERSÃO: REACT -> SUPABASE
+// ======================================================
+
+// Faz o caminho contrário.
+//
+// Recebe um objeto utilizado pelo React e transforma
+// somente os campos enviados para o padrão do banco.
+//
+// Isso é importante porque updateItem pode atualizar
+// apenas um campo sem sobrescrever os outros.
 function converterItemParaBanco(item) {
     const itemBanco = {}
 
@@ -173,29 +216,43 @@ function converterItemParaBanco(item) {
             null
     }
 
+    // Toda alteração atualiza a data de modificação.
     itemBanco.updated_at =
         new Date().toISOString()
 
     return itemBanco
 }
 
+
+// ======================================================
+// PROVIDER
+// ======================================================
+
 export function ItemsProvider({
     children,
 }) {
+    // Lista principal de itens utilizada por toda a aplicação.
     const [
         items,
         setItems,
     ] = useState([])
 
+    // Indica se os itens ainda estão sendo carregados.
     const [
         loadingItems,
         setLoadingItems,
     ] = useState(true)
 
+    // Guarda erros relacionados aos itens.
     const [
         itemsError,
         setItemsError,
     ] = useState(null)
+
+
+    // ==================================================
+    // CARREGAMENTO INICIAL DOS ITENS
+    // ==================================================
 
     useEffect(() => {
         async function carregarItens() {
@@ -203,9 +260,12 @@ export function ItemsProvider({
                 setLoadingItems(true)
                 setItemsError(null)
 
+                // Busca todos os itens atuais no Supabase.
                 const dados =
                     await getItems()
 
+                // Converte cada registro para o formato
+                // utilizado pelo React.
                 setItems(
                     dados.map(
                         converterItemDoBanco
@@ -228,6 +288,160 @@ export function ItemsProvider({
         carregarItens()
     }, [])
 
+
+    // ==================================================
+    // SUPABASE REALTIME
+    // ==================================================
+
+    useEffect(() => {
+        // Criamos um canal Realtime.
+        //
+        // Esse canal ficará ouvindo alterações realizadas
+        // na tabela "items".
+        const channel = supabase
+            .channel("items-realtime")
+
+            .on(
+                "postgres_changes",
+                {
+                    // "*" significa ouvir:
+                    //
+                    // INSERT
+                    // UPDATE
+                    // DELETE
+                    event: "*",
+
+                    // Schema utilizado pelo Supabase.
+                    schema: "public",
+
+                    // Tabela que queremos acompanhar.
+                    table: "items",
+                },
+
+                (payload) => {
+                    // O payload informa qual alteração aconteceu
+                    // e envia os dados antigos/novos.
+
+                    // ==========================================
+                    // NOVO ITEM
+                    // ==========================================
+
+                    if (
+                        payload.eventType ===
+                        "INSERT"
+                    ) {
+                        const novoItem =
+                            converterItemDoBanco(
+                                payload.new
+                            )
+
+                        setItems(
+                            (currentItems) => {
+                                // Como addItem também adiciona o item
+                                // localmente, podemos receber o mesmo
+                                // INSERT pelo Realtime.
+                                //
+                                // Por isso verificamos se ele já existe.
+                                const jaExiste =
+                                    currentItems.some(
+                                        (item) =>
+                                            item.id ===
+                                            novoItem.id
+                                    )
+
+                                if (jaExiste) {
+                                    return currentItems
+                                }
+
+                                return [
+                                    novoItem,
+                                    ...currentItems,
+                                ]
+                            }
+                        )
+                    }
+
+
+                    // ==========================================
+                    // ITEM ATUALIZADO
+                    // ==========================================
+
+                    if (
+                        payload.eventType ===
+                        "UPDATE"
+                    ) {
+                        const itemAtualizado =
+                            converterItemDoBanco(
+                                payload.new
+                            )
+
+                        setItems(
+                            (currentItems) =>
+                                currentItems.map(
+                                    (item) =>
+                                        item.id ===
+                                            itemAtualizado.id
+                                            ? itemAtualizado
+                                            : item
+                                )
+                        )
+                    }
+
+
+                    // ==========================================
+                    // ITEM EXCLUÍDO
+                    // ==========================================
+
+                    if (
+                        payload.eventType ===
+                        "DELETE"
+                    ) {
+                        const itemExcluido =
+                            payload.old
+
+                        setItems(
+                            (currentItems) =>
+                                currentItems.filter(
+                                    (item) =>
+                                        item.id !==
+                                        itemExcluido.id
+                                )
+                        )
+                    }
+                }
+            )
+
+            // Inicia a conexão com o Realtime.
+            .subscribe((status, error) => {
+                // Esse console é útil enquanto estamos
+                // testando a implementação.
+
+                if (error) {
+                    console.error(
+                        "Erro no Realtime:",
+                        error
+                    )
+                }
+            })
+
+
+        // Quando o componente for desmontado,
+        // removemos o canal.
+        //
+        // Isso evita conexões duplicadas e vazamento
+        // de recursos.
+        return () => {
+            supabase.removeChannel(
+                channel
+            )
+        }
+    }, [])
+
+
+    // ==================================================
+    // CADASTRAR ITEM
+    // ==================================================
+
     async function addItem(newItem) {
         try {
             setItemsError(null)
@@ -236,6 +450,8 @@ export function ItemsProvider({
                 converterItemParaBanco({
                     ...newItem,
 
+                    // Caso o status não seja enviado,
+                    // o item é criado como ATIVO.
                     status:
                         newItem.status ||
                         ITEM_STATUS.ATIVO,
@@ -251,11 +467,30 @@ export function ItemsProvider({
                     itemCriado
                 )
 
+            // Atualização imediata no computador
+            // que realizou o cadastro.
+            //
+            // O Realtime também receberá esse INSERT,
+            // mas nossa verificação "jaExiste" impede
+            // duplicação.
             setItems(
-                (currentItems) => [
-                    itemConvertido,
-                    ...currentItems,
-                ]
+                (currentItems) => {
+                    const jaExiste =
+                        currentItems.some(
+                            (item) =>
+                                item.id ===
+                                itemConvertido.id
+                        )
+
+                    if (jaExiste) {
+                        return currentItems
+                    }
+
+                    return [
+                        itemConvertido,
+                        ...currentItems,
+                    ]
+                }
             )
 
             return itemConvertido
@@ -273,6 +508,11 @@ export function ItemsProvider({
         }
     }
 
+
+    // ==================================================
+    // ATUALIZAR ITEM
+    // ==================================================
+
     async function updateItem(
         itemId,
         updatedData
@@ -280,6 +520,7 @@ export function ItemsProvider({
         try {
             setItemsError(null)
 
+            // Converte somente os campos enviados.
             const dadosParaBanco =
                 converterItemParaBanco(
                     updatedData
@@ -296,6 +537,10 @@ export function ItemsProvider({
                     itemAtualizado
                 )
 
+            // Atualiza imediatamente neste navegador.
+            //
+            // Outros computadores receberão a mudança
+            // através do Realtime.
             setItems(
                 (currentItems) =>
                     currentItems.map(
@@ -322,18 +567,28 @@ export function ItemsProvider({
         }
     }
 
+
+    // ==================================================
+    // EXCLUIR ITEM
+    // ==================================================
+
     async function removeItem(itemId) {
         try {
             setItemsError(null)
 
+            // Localizamos o item antes de excluir porque
+            // precisaremos da URL da imagem para removê-la.
             const itemSelecionado =
                 items.find(
                     (item) =>
                         item.id === itemId
                 )
 
+            // Exclui o registro do Supabase.
             await deleteItem(itemId)
 
+            // Se o item possuir foto,
+            // removemos também do Storage.
             if (
                 itemSelecionado?.fotoUrl ||
                 itemSelecionado?.foto
@@ -351,6 +606,10 @@ export function ItemsProvider({
                 }
             }
 
+            // Remove imediatamente deste navegador.
+            //
+            // Outros computadores receberão DELETE
+            // pelo Realtime.
             setItems(
                 (currentItems) =>
                     currentItems.filter(
@@ -373,10 +632,20 @@ export function ItemsProvider({
         }
     }
 
+
+    // ==================================================
+    // CONFIRMAR RETIRADA
+    // ==================================================
+
     async function withdrawItem(
         itemId,
         withdrawalData = {}
     ) {
+        // Uma retirada é simplesmente uma atualização
+        // do status do item.
+        //
+        // Como updateItem já atualiza o banco e o estado,
+        // não precisamos repetir a lógica.
         return updateItem(itemId, {
             status:
                 ITEM_STATUS.RETIRADO,
@@ -388,10 +657,18 @@ export function ItemsProvider({
         })
     }
 
+
+    // ==================================================
+    // CONFIRMAR DOAÇÃO
+    // ==================================================
+
     async function donateItem(
         itemId,
         donationData = {}
     ) {
+        // Assim como na retirada,
+        // a doação apenas altera o status e registra
+        // a data/dados da operação.
         return updateItem(itemId, {
             status:
                 ITEM_STATUS.DOADO,
@@ -403,12 +680,19 @@ export function ItemsProvider({
         })
     }
 
+
+    // ==================================================
+    // DADOS DISPONÍVEIS PARA TODA A APLICAÇÃO
+    // ==================================================
+
     return (
         <ItemsContext.Provider
             value={{
                 items,
+
                 loadingItems,
                 itemsError,
+
                 addItem,
                 updateItem,
                 removeItem,
@@ -421,6 +705,16 @@ export function ItemsProvider({
     )
 }
 
+
+// ======================================================
+// HOOK useItems
+// ======================================================
+
+// Esse hook facilita o acesso ao contexto:
+//
+// const { items, addItem } = useItems()
+//
+// Também evita usar o contexto fora do ItemsProvider.
 export function useItems() {
     const context =
         useContext(ItemsContext)

@@ -38,11 +38,25 @@ export function AuthProvider({ children }) {
         }
     }, [])
 
-    async function login(email, senha) {
+    async function login(
+        email,
+        senha,
+        captchaToken
+    ) {
+        if (!captchaToken) {
+            return {
+                success: false,
+                message: "Captcha não validado.",
+            }
+        }
+
         const { error } =
             await supabase.auth.signInWithPassword({
                 email,
                 password: senha,
+                options: {
+                    captchaToken,
+                },
             })
 
         if (error) {

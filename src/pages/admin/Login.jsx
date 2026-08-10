@@ -1,7 +1,15 @@
-import { useState } from "react"
+import {
+    useRef,
+    useState,
+} from "react"
+
 import "../../styles/login.css"
 
-import { Navigate, useNavigate } from "react-router-dom"
+import {
+    Navigate,
+    useNavigate,
+} from "react-router-dom"
+
 import {
     FiEye,
     FiEyeOff,
@@ -10,43 +18,122 @@ import {
     FiUser,
 } from "react-icons/fi"
 
+import HCaptcha from "@hcaptcha/react-hcaptcha"
+
 import { useAuth } from "../../contexts/AuthContext"
 
 function Login() {
     const { user, login } = useAuth()
     const navigate = useNavigate()
 
-    const [usuario, setUsuario] = useState("")
-    const [senha, setSenha] = useState("")
-    const [mostrarSenha, setMostrarSenha] = useState(false)
-    const [mensagemErro, setMensagemErro] = useState("")
+    const [usuario, setUsuario] =
+        useState("")
+
+    const [senha, setSenha] =
+        useState("")
+
+    const [
+        mostrarSenha,
+        setMostrarSenha,
+    ] = useState(false)
+
+    const [
+        mensagemErro,
+        setMensagemErro,
+    ] = useState("")
+
+    const [
+        captchaToken,
+        setCaptchaToken,
+    ] = useState(null)
+
+    const [
+        enviando,
+        setEnviando,
+    ] = useState(false)
+
+    const captchaRef =
+        useRef(null)
+
+    const siteKey =
+        import.meta.env.VITE_HCAPTCHA_SITE_KEY
 
     if (user) {
-        return <Navigate to="/admin/dashboard" replace />
+        return (
+            <Navigate
+                to="/admin/dashboard"
+                replace
+            />
+        )
     }
 
     async function handleSubmit(event) {
         event.preventDefault()
 
-        const emailLimpo = usuario.trim()
+        const emailLimpo =
+            usuario.trim()
 
         if (!emailLimpo || !senha) {
-            setMensagemErro("Preencha o e-mail e a senha.")
+            setMensagemErro(
+                "Preencha o e-mail e a senha."
+            )
             return
         }
 
-        const resultado = await login(emailLimpo, senha)
-
-        if (!resultado.success) {
-            setMensagemErro("E-mail ou senha inválidos.")
+        if (!captchaToken) {
+            setMensagemErro(
+                "Confirme que você não é um robô."
+            )
             return
         }
 
-        setMensagemErro("")
+        try {
+            setEnviando(true)
+            setMensagemErro("")
 
-        navigate("/admin/dashboard", {
-            replace: true,
-        })
+            const resultado =
+                await login(
+                    emailLimpo,
+                    senha,
+                    captchaToken
+                )
+
+            if (!resultado.success) {
+                setMensagemErro(
+                    "E-mail ou senha inválidos."
+                )
+
+                setCaptchaToken(null)
+
+                captchaRef.current
+                    ?.resetCaptcha()
+
+                return
+            }
+
+            navigate(
+                "/admin/dashboard",
+                {
+                    replace: true,
+                }
+            )
+        } catch (error) {
+            console.error(
+                "Erro durante o login:",
+                error
+            )
+
+            setMensagemErro(
+                "Não foi possível realizar o login."
+            )
+
+            setCaptchaToken(null)
+
+            captchaRef.current
+                ?.resetCaptcha()
+        } finally {
+            setEnviando(false)
+        }
     }
 
     return (
@@ -57,7 +144,9 @@ function Login() {
                         <FiLock />
                     </div>
 
-                    <span>Sistema de Achados e Perdidos</span>
+                    <span>
+                        Sistema de Achados e Perdidos
+                    </span>
                 </div>
 
                 <div className="login-card__header">
@@ -68,8 +157,9 @@ function Login() {
                     <h1>Bem-vindo</h1>
 
                     <p>
-                        Entre com suas credenciais para acessar o
-                        painel administrativo.
+                        Entre com suas credenciais
+                        para acessar o painel
+                        administrativo.
                     </p>
                 </div>
 
@@ -87,13 +177,17 @@ function Login() {
                                 type="email"
                                 value={usuario}
                                 onChange={(event) => {
-                                    setUsuario(event.target.value)
+                                    setUsuario(
+                                        event.target.value
+                                    )
+
                                     setMensagemErro("")
                                 }}
                                 placeholder="Digite seu e-mail"
                                 autoComplete="email"
                                 autoFocus
                                 required
+                                disabled={enviando}
                             />
                         </div>
                     </label>
@@ -112,12 +206,16 @@ function Login() {
                                 }
                                 value={senha}
                                 onChange={(event) => {
-                                    setSenha(event.target.value)
+                                    setSenha(
+                                        event.target.value
+                                    )
+
                                     setMensagemErro("")
                                 }}
                                 placeholder="Digite sua senha"
                                 autoComplete="current-password"
                                 required
+                                disabled={enviando}
                             />
 
                             <button
@@ -130,9 +228,11 @@ function Login() {
                                 }
                                 onClick={() =>
                                     setMostrarSenha(
-                                        (valorAtual) => !valorAtual
+                                        (valorAtual) =>
+                                            !valorAtual
                                     )
                                 }
+                                disabled={enviando}
                             >
                                 {mostrarSenha ? (
                                     <FiEyeOff />
@@ -142,6 +242,33 @@ function Login() {
                             </button>
                         </div>
                     </label>
+
+                    <div className="login-form__captcha">
+                        <HCaptcha
+                            ref={captchaRef}
+                            sitekey={siteKey}
+                            theme="dark"
+                            onVerify={(token) => {
+                                setCaptchaToken(token)
+                                setMensagemErro("")
+                            }}
+                            onExpire={() => {
+                                setCaptchaToken(null)
+                            }}
+                            onError={(erro) => {
+                                console.error(
+                                    "Erro do hCaptcha:",
+                                    erro
+                                )
+
+                                setCaptchaToken(null)
+
+                                setMensagemErro(
+                                    `Erro no CAPTCHA: ${erro}`
+                                )
+                            }}
+                        />
+                    </div>
 
                     {mensagemErro && (
                         <p
@@ -155,9 +282,16 @@ function Login() {
                     <button
                         className="login-form__submit"
                         type="submit"
+                        disabled={
+                            enviando ||
+                            !captchaToken
+                        }
                     >
                         <FiLogIn />
-                        Entrar
+
+                        {enviando
+                            ? "Entrando..."
+                            : "Entrar"}
                     </button>
                 </form>
 

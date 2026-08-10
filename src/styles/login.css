@@ -6,16 +6,12 @@
     padding: 24px;
 
     background:
-        radial-gradient(
-            circle at top left,
+        radial-gradient(circle at top left,
             rgba(37, 99, 235, 0.15),
-            transparent 34%
-        ),
-        radial-gradient(
-            circle at bottom right,
+            transparent 34%),
+        radial-gradient(circle at bottom right,
             rgba(59, 130, 246, 0.08),
-            transparent 30%
-        ),
+            transparent 30%),
         #080808;
 }
 
@@ -27,11 +23,9 @@
     border: 1px solid #292929;
     border-radius: 22px;
 
-    background: linear-gradient(
-        145deg,
-        rgba(26, 26, 26, 0.98),
-        rgba(15, 15, 15, 0.98)
-    );
+    background: linear-gradient(145deg,
+            rgba(26, 26, 26, 0.98),
+            rgba(15, 15, 15, 0.98));
 
     box-shadow: 0 30px 80px rgba(0, 0, 0, 0.48);
 }
@@ -120,7 +114,7 @@
     align-items: center;
 }
 
-.login-form__input-wrapper > svg {
+.login-form__input-wrapper>svg {
     position: absolute;
     left: 14px;
     z-index: 1;
@@ -276,6 +270,12 @@
     color: #555555;
     font-size: 11px;
     text-align: center;
+}
+
+.login-form__captcha {
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
 @media (max-width: 520px) {
