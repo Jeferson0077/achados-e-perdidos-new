@@ -57,6 +57,11 @@ function Login() {
 
     const siteKey =
         import.meta.env.VITE_HCAPTCHA_SITE_KEY
+    console.log(
+        "HCaptcha sitekey carregada:",
+        Boolean(siteKey),
+        siteKey?.slice(0, 6)
+    )
 
     if (user) {
         return (
