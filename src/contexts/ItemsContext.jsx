@@ -316,11 +316,7 @@ export function ItemsProvider({
                 },
 
                 (payload) => {
-                    console.log(
-                        "Realtime evento:",
-                        payload.eventType,
-                        payload
-                    )
+
                     // O payload informa qual alteração aconteceu
                     // e envia os dados antigos/novos.
 
@@ -415,10 +411,6 @@ export function ItemsProvider({
 
             // Inicia a conexão com o Realtime.
             .subscribe((status, error) => {
-                console.log(
-                    "Realtime status:",
-                    status
-                )
 
                 if (error) {
                     console.error(

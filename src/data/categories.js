@@ -381,13 +381,6 @@ export const categories = [
     },
 
     {
-        id: "acessorios-cachorro",
-        nome: "Acessórios para Cachorro",
-        icone: cachorroIcon,
-        subcategorias: [],
-    },
-
-    {
         id: "skates",
         nome: "Skates",
         icone: skateIcon,
