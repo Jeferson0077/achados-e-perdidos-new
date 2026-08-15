@@ -1,3 +1,5 @@
+import { useState } from "react"
+
 import {
     PieChart,
     Pie,
@@ -14,19 +16,70 @@ import AdminLayout from "../../layouts/AdminLayout"
 function Reports() {
     const { items } = useItems()
 
-    const itensAtivos = items.filter(
-        (item) => item.status === ITEM_STATUS.ATIVO
-    )
+    const [dataInicial, setDataInicial] =
+        useState("")
 
-    const itensRetirados = items.filter(
-        (item) => item.status === ITEM_STATUS.RETIRADO
-    )
+    const [dataFinal, setDataFinal] =
+        useState("")
 
-    const itensDoados = items.filter(
-        (item) => item.status === ITEM_STATUS.DOADO
-    )
+    function itemEstaNoPeriodo(item) {
+        const dataItem =
+            item.dataEncontrado ||
+            item.data
 
-    const totalItens = items.length
+        if (!dataItem) {
+            return false
+        }
+
+        const data =
+            new Date(dataItem)
+
+        if (
+            dataInicial &&
+            data < new Date(dataInicial)
+        ) {
+            return false
+        }
+
+        if (
+            dataFinal &&
+            data >
+            new Date(
+                `${dataFinal}T23:59:59`
+            )
+        ) {
+            return false
+        }
+
+        return true
+    }
+
+    const itensFiltrados =
+        items.filter(itemEstaNoPeriodo)
+
+    const itensAtivos =
+        itensFiltrados.filter(
+            (item) =>
+                item.status ===
+                ITEM_STATUS.ATIVO
+        )
+
+    const itensRetirados =
+        itensFiltrados.filter(
+            (item) =>
+                item.status ===
+                ITEM_STATUS.RETIRADO
+        )
+
+    const itensDoados =
+        itensFiltrados.filter(
+            (item) =>
+                item.status ===
+                ITEM_STATUS.DOADO
+        )
+
+    const totalItens =
+        itensFiltrados.length
 
     const taxaDevolucao =
         totalItens > 0
@@ -36,15 +89,16 @@ function Reports() {
             ).toFixed(1)
             : "0.0"
 
-    const categorias = items.reduce((acumulador, item) => {
-        const categoria =
-            item.categoria || "Sem categoria"
+    const categorias =
+        itensFiltrados.reduce((acumulador, item) => {
+            const categoria =
+                item.categoria || "Sem categoria"
 
-        acumulador[categoria] =
-            (acumulador[categoria] || 0) + 1
+            acumulador[categoria] =
+                (acumulador[categoria] || 0) + 1
 
-        return acumulador
-    }, {})
+            return acumulador
+        }, {})
 
     const categoriasOrdenadas = Object.entries(categorias)
         .sort((categoriaA, categoriaB) =>
@@ -126,6 +180,37 @@ function Reports() {
                             do sistema.
                         </p>
                     </div>
+
+                    <div className="reports-filters">
+                        <label className="reports-filter">
+                            <span>Data inicial</span>
+
+                            <input
+                                type="date"
+                                value={dataInicial}
+                                onChange={(event) =>
+                                    setDataInicial(
+                                        event.target.value
+                                    )
+                                }
+                            />
+                        </label>
+
+                        <label className="reports-filter">
+                            <span>Data Final</span>
+
+                            <input
+                                type="date"
+                                value={dataFinal}
+                                onChange={(event) =>
+                                    setDataFinal(
+                                        event.target.value
+                                    )
+                                }
+                            />
+                        </label>
+                    </div>
+
                 </div>
 
                 <div className="reports-summary">

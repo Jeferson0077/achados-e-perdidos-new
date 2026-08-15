@@ -33,6 +33,7 @@ dist-ssr/
 imports/
 backups/
 manifest-itens*.json
+supabase/.temp/
 
 # ==========================
 # Editor
