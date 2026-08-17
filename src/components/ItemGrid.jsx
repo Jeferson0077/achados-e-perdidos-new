@@ -42,41 +42,81 @@ function ItemGrid(props) {
         return new Date(0)
     }
 
-    const itensFiltrados = items
-        .filter((item) => {
-            const itemAtivo =
-                !item.status ||
-                item.status === ITEM_STATUS.ATIVO
+   const itensFiltrados = items
+    .filter((item) => {
+        // Verifica se o item ainda está ativo
+        const itemAtivo =
+            !item.status ||
+            item.status === ITEM_STATUS.ATIVO
 
-            if (!itemAtivo) {
-                return false
-            }
+        if (!itemAtivo) {
+            return false
+        }
 
-            const pertenceCategoria =
-                item.categoria === props.categoria.id
+        // Pega a data em que o item foi encontrado
+        const dataEncontrado =
+            item.dataEncontrado ||
+            item.data
 
-            if (props.subcategoria) {
-                return (
-                    pertenceCategoria &&
-                    item.subcategoria ===
+        // Converte a data para o formato Date do JavaScript
+        const dataDoItem =
+            converterData(dataEncontrado)
+
+        const hoje =
+            new Date()
+
+        // Zera as horas para comparar apenas os dias
+        dataDoItem.setHours(0, 0, 0, 0)
+        hoje.setHours(0, 0, 0, 0)
+
+        // Calcula quantos dias se passaram
+        const dias =
+            Math.floor(
+                (hoje - dataDoItem) /
+                (1000 * 60 * 60 * 24)
+            )
+
+        // Com 60 dias ou mais,
+        // o item não aparece mais no frontend público
+        if (dias >= 60) {
+            return false
+        }
+
+        // Verifica se pertence à categoria aberta
+        const pertenceCategoria =
+            item.categoria ===
+            props.categoria.id
+
+        // Se houver uma subcategoria selecionada,
+        // verifica categoria + subcategoria
+        if (props.subcategoria) {
+            return (
+                pertenceCategoria &&
+                item.subcategoria ===
                     props.subcategoria.id
-                )
-            }
+            )
+        }
 
-            return pertenceCategoria
-        })
-        .sort((itemA, itemB) => {
-            const dataA = converterData(
-                itemA.dataEncontrado || itemA.data
+        // Se não houver subcategoria,
+        // basta pertencer à categoria
+        return pertenceCategoria
+    })
+    .sort((itemA, itemB) => {
+        const dataA =
+            converterData(
+                itemA.dataEncontrado ||
+                itemA.data
             )
 
-            const dataB = converterData(
-                itemB.dataEncontrado || itemB.data
+        const dataB =
+            converterData(
+                itemB.dataEncontrado ||
+                itemB.data
             )
 
-            // Mais antigos primeiro
-            return dataA - dataB
-        })
+        // Mais antigos primeiro
+        return dataA - dataB
+    })
 
     const textoQuantidade =
         itensFiltrados.length === 0

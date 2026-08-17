@@ -13,34 +13,24 @@ function DashboardCards() {
     const { items } = useItems()
 
     const activeItems = items.filter(
-        (item) => item.status === ITEM_STATUS.ATIVO
+        (item) =>
+            item.status === ITEM_STATUS.ATIVO
     )
 
     const withdrawnItems = items.filter(
-        (item) => item.status === ITEM_STATUS.RETIRADO
+        (item) =>
+            item.status === ITEM_STATUS.RETIRADO
+    )
+
+    const itemsForDonation = items.filter(
+        (item) =>
+            item.status === ITEM_STATUS.PARA_DOACAO
     )
 
     const donatedItems = items.filter(
-        (item) => item.status === ITEM_STATUS.DOADO
+        (item) =>
+            item.status === ITEM_STATUS.DOADO
     )
-
-    const itemsForDonation = activeItems.filter((item) => {
-        if (!item.dataEncontrado) {
-            return false
-        }
-
-        const foundDate = new Date(item.dataEncontrado)
-        const currentDate = new Date()
-
-        const differenceInMilliseconds =
-            currentDate.getTime() - foundDate.getTime()
-
-        const differenceInDays =
-            differenceInMilliseconds /
-            (1000 * 60 * 60 * 24)
-
-        return differenceInDays >= 60
-    })
 
     return (
         <section className="dashboard-cards">
@@ -63,7 +53,7 @@ function DashboardCards() {
             <DashboardCard
                 title="Para Doação"
                 value={itemsForDonation.length}
-                subtitle="Mais de 60 dias"
+                subtitle="60 dias ou mais"
                 icon={<FiGift />}
                 variant="donation"
             />

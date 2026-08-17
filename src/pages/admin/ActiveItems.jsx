@@ -116,10 +116,6 @@ function ActiveItems() {
         setPesquisa,
     ] = useState("")
 
-    const todosItensAtivos = items.filter(
-        (item) =>
-            item.status === ITEM_STATUS.ATIVO
-    )
 
     const categoriaSelecionadaEdicao =
         categories.find(
@@ -131,19 +127,6 @@ function ActiveItems() {
     const subcategoriasEdicao =
         categoriaSelecionadaEdicao
             ?.subcategorias ?? []
-
-    const categoriasDisponiveis = [
-        ...new Set(
-            todosItensAtivos
-                .map((item) => item.categoria)
-                .filter(Boolean)
-        ),
-    ].sort((categoriaA, categoriaB) =>
-        categoriaA.localeCompare(
-            categoriaB,
-            "pt-BR"
-        )
-    )
 
     useEffect(() => {
         return () => {
@@ -187,6 +170,51 @@ function ActiveItems() {
 
         return new Date(data)
     }
+
+
+    const todosItensAtivos = items.filter(
+        (item) => {
+            const itemAtivo =
+                item.status === ITEM_STATUS.ATIVO
+
+            if (!itemAtivo) {
+                return false
+            }
+
+            const dataEncontrado =
+                item.dataEncontrado ||
+                item.data
+
+            const dataDoItem =
+                converterData(dataEncontrado)
+
+            const hoje = new Date()
+
+            dataDoItem.setHours(0, 0, 0, 0)
+            hoje.setHours(0, 0, 0, 0)
+
+            const dias =
+                Math.floor(
+                    (hoje - dataDoItem) /
+                    (1000 * 60 * 60 * 24)
+                )
+
+            return dias < 60
+        }
+    )
+
+    const categoriasDisponiveis = [
+        ...new Set(
+            todosItensAtivos
+                .map((item) => item.categoria)
+                .filter(Boolean)
+        ),
+    ].sort((categoriaA, categoriaB) =>
+        categoriaA.localeCompare(
+            categoriaB,
+            "pt-BR"
+        )
+    )
 
     function formatarData(data) {
         if (!data) {

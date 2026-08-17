@@ -63,16 +63,9 @@ function Donations() {
     }
 
     const todosItensParaDoacao = items.filter(
-        (item) => {
-            const dias = calcularDias(
-                item.dataEncontrado || item.data
-            )
-
-            return (
-                item.status === ITEM_STATUS.ATIVO &&
-                dias >= 60
-            )
-        }
+        (item) =>
+            item.status ===
+            ITEM_STATUS.PARA_DOACAO
     )
 
     const categoriasDisponiveis = [

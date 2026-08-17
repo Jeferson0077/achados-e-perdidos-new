@@ -9,7 +9,10 @@ import Footer from '../components/Footer'
 import "../styles/header.css";
 
 function Home() {
+
+
     const [categoriaSelecionada, setCategoriaSelecionada] = useState(null)
+
     const [subcategoriaSelecionada, setSubcategoriaSelecionada] = useState(null)
 
     function handleVoltar() {

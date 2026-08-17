@@ -1,5 +1,6 @@
 export const ITEM_STATUS = {
     ATIVO: "ATIVO",
+    PARA_DOACAO: "PARA_DOACAO",
     RETIRADO: "RETIRADO",
     DOADO: "DOADO",
 }
